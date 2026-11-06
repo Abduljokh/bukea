@@ -219,11 +219,33 @@ body {
   background: rgba(0, 0, 0, 0.025);
   border: 1px solid rgba(0, 0, 0, 0.1);
   border-radius: 14px;
-  padding: 12px 16px;
-  font-size: 0.92rem;
+  padding: 11px 14px;
+  font-size: 0.90rem;
   color: #0A0A0A;
   outline: none;
   transition: all 0.2s ease;
+  line-height: 1.4;
+  box-sizing: border-box;
+}
+
+.input-minimal.has-icon-left {
+  padding-left: 44px !important;
+}
+
+.input-minimal.has-icon-right {
+  padding-right: 44px !important;
+}
+
+select.input-minimal {
+  cursor: pointer;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  padding-right: 36px !important;
+}
+
+select.input-minimal.has-icon-left {
+  padding-left: 44px !important;
 }
 
 .input-minimal:focus {
@@ -233,7 +255,8 @@ body {
 }
 
 .input-minimal::placeholder {
-  color: var(--txt-light);
+  color: #9CA3AF;
+  opacity: 1;
 }
 
 /* Time Slot Selection */
