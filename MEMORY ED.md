@@ -104,10 +104,11 @@
 # Directorio del proyecto web
 cd "/Volumes/EDS 2TB SSD/Antigravity/Bukea/web"
 
-# Levantar servidor en puerto 3004 (Webpack mode sin turbopack para soportar symlinks)
-npx next dev -p 3004
+# Levantar servidor en puerto 3000 expuesto a la red local (para pruebas en móviles)
+npx next dev -H 0.0.0.0 -p 3000
 ```
-URL local: **http://localhost:3004**
+URL local: **http://localhost:3000**  
+URL red Wi-Fi / Router (móviles): **http://192.168.1.2:3000**
 
 > **⚠️ Regla de Estabilidad de UI:** NUNCA ejecutar `next build` mientras el servidor `next dev` esté corriendo en segundo plano, ya que Next.js sobreescribe la carpeta `.next/` con artefactos de producción y corrompe los hashes del CSS en caliente (provocando error 404 en los estilos y dejando la interfaz en HTML crudo). Si se requiere compilar, detener primero el proceso de desarrollo y luego reiniciar con `.next` limpio.
 
