@@ -129,3 +129,6 @@ URL local: **http://localhost:3004**
 - `279bb2b`: Maqueta blanca liquid glass BUKEA, tipografías oficiales, badges minimalistas y memoria técnica.
 - `7f5dfd6`: Selector interactivo de destino y autodetección de ubicación GPS.
 - `6f3a33b`: Precarga optimizada de fuentes en layout y directiva limpia de Tailwind v4 en globals.css.
+- `c333dbe`: Remoción de botones CTA duplicados del card de negocio, dejando los CTAs exclusivamente en el dock flotante inferior.
+- `7127773`: Frosted glass sólido en el dock flotante (`rgba(255,255,255,0.94)`, blur 24px, borde y sombras nítidas) y remoción del botón 360° del dock (para integrarlo directamente en el primer slide del carrusel).
+
