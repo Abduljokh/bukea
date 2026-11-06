@@ -132,5 +132,7 @@ URL local: **http://localhost:3004**
 - `c333dbe`: Remoción de botones CTA duplicados del card de negocio, dejando los CTAs exclusivamente en el dock flotante inferior.
 - `7127773`: Frosted glass sólido en el dock flotante (`rgba(255,255,255,0.94)`, blur 24px, borde y sombras nítidas) y remoción del botón 360° del dock (para integrarlo directamente en el primer slide del carrusel).
 - `46a3d0f`: Reordenamiento del dock flotante con Reservar al centro (`[Ver Menú] | [Reservar] | [WhatsApp]`), remoción de campos de contacto del paso 1 de reserva y cambio de CTA a "Continuar con la Reserva".
+- `295e6f3`: Implementación completa del Checkout Rápido con Accordion Stepper colapsable de 3 pasos (`CheckoutStepper.tsx`), Escudo Anti-Spam (Abono $1 USD / Puntos Bukea), métodos C2P Débito Inmediato y Pago Móvil Directo con timer de mesa retenida.
+
 
 
