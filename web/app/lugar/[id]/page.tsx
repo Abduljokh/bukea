@@ -148,8 +148,8 @@ export default function LugarPage() {
 
   const handleReservar = async () => {
     setErr('');
-    if (!sel || !name || !phone) {
-      setErr('Por favor completa tu nombre, teléfono y selecciona una hora.');
+    if (!sel) {
+      setErr('Por favor selecciona un horario para tu reserva.');
       return;
     }
 
@@ -161,8 +161,8 @@ export default function LugarPage() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           business_id: id,
-          guest_name: name,
-          guest_phone: phone,
+          guest_name: name || 'Invitado Bukea',
+          guest_phone: phone || '',
           guest_size: size,
           slot_start: sel.start,
         }),
@@ -181,8 +181,8 @@ export default function LugarPage() {
           date: fmtDate(date),
           time: fmtTime(sel.start),
           guests: size,
-          guestName: name,
-          guestPhone: phone,
+          guestName: name || 'Invitado Bukea',
+          guestPhone: phone || '',
           status: 'confirmada',
           createdAt: new Date().toISOString(),
           perks: b.perks || ['Atención preferencial Bukea'],
@@ -207,8 +207,8 @@ export default function LugarPage() {
           date: fmtDate(date),
           time: fmtTime(sel.start),
           guests: size,
-          guestName: name,
-          guestPhone: phone,
+          guestName: name || 'Invitado Bukea',
+          guestPhone: phone || '',
           status: 'confirmada',
           createdAt: new Date().toISOString(),
           perks: b.perks || ['Atención preferencial Bukea'],
@@ -446,52 +446,23 @@ export default function LugarPage() {
                 </div>
               </div>
 
-              {/* Datos de Contacto */}
-              <div className="space-y-3 mb-5">
-                <div>
-                  <label className="text-[11px] font-semibold text-neutral-700 block mb-1">
-                    Nombre del Titular
-                  </label>
-                  <input
-                    type="text"
-                    placeholder="Ej. Sofía Mendoza"
-                    value={name}
-                    onChange={(e) => setName(e.target.value)}
-                    className="input-minimal text-xs"
-                  />
-                </div>
-
-                <div>
-                  <label className="text-[11px] font-semibold text-neutral-700 block mb-1">
-                    Teléfono (WhatsApp)
-                  </label>
-                  <input
-                    type="tel"
-                    placeholder="Ej. +58 412 123 4567"
-                    value={phone}
-                    onChange={(e) => setPhone(e.target.value)}
-                    className="input-minimal text-xs"
-                  />
-                </div>
-              </div>
-
               {err && (
                 <div className="p-3 rounded-xl bg-neutral-100 border border-black/10 text-neutral-800 text-xs mb-4">
                   {err}
                 </div>
               )}
 
-              {/* Botón de Confirmación */}
+              {/* Botón de Continuar */}
               <button
                 onClick={handleReservar}
                 disabled={loading}
                 className="btn-solid w-full py-3.5 text-sm font-semibold flex items-center justify-center gap-2"
               >
                 {loading ? (
-                  <span>Confirmando reserva…</span>
+                  <span>Procesando…</span>
                 ) : (
                   <>
-                    <span>Confirmar Reserva{sel ? ` · ${fmtTime(sel.start)}` : ''}</span>
+                    <span>Continuar con la Reserva{sel ? ` · ${fmtTime(sel.start)}` : ''}</span>
                     <ChevronRight size={16} />
                   </>
                 )}
@@ -595,10 +566,20 @@ export default function LugarPage() {
       <nav className="fixed bottom-5 left-1/2 -translate-x-1/2 z-40 max-w-sm w-[90%] liquid-glass-dock rounded-full p-1.5 flex items-center justify-between gap-1 shadow-2xl">
         <button
           onClick={() => setMenuDigital(true)}
-          className="flex-1 py-2 px-3 rounded-full text-black hover:bg-neutral-100 transition-colors flex items-center justify-center gap-1.5 text-xs font-semibold cursor-pointer"
+          className="flex-1 py-2 px-2.5 rounded-full text-black hover:bg-neutral-100 transition-colors flex items-center justify-center gap-1.5 text-xs font-semibold cursor-pointer text-center"
         >
-          <BookOpen size={14} />
+          <BookOpen size={14} className="shrink-0" />
           <span>Ver Menú</span>
+        </button>
+
+        <button
+          onClick={() => {
+            document.getElementById('reserva-section')?.scrollIntoView({ behavior: 'smooth' });
+          }}
+          className="btn-solid py-2 px-4 rounded-full text-xs font-bold shadow-sm shrink-0 flex items-center justify-center gap-1.5 cursor-pointer"
+        >
+          <CalendarCheck size={14} className="shrink-0" />
+          <span>Reservar</span>
         </button>
 
         {b.whatsapp && (
@@ -606,22 +587,12 @@ export default function LugarPage() {
             href={`https://wa.me/${b.whatsapp.replace(/\D/g, '')}?text=${encodeURIComponent(`Hola ${b.name}, los contacto desde Bukea para consultar sobre sus mesas y reservas.`)}`}
             target="_blank"
             rel="noreferrer"
-            className="flex-1 py-2 px-3 rounded-full text-black hover:bg-neutral-100 transition-colors flex items-center justify-center gap-1.5 text-xs font-semibold"
+            className="flex-1 py-2 px-2.5 rounded-full text-black hover:bg-neutral-100 transition-colors flex items-center justify-center gap-1.5 text-xs font-semibold text-center"
           >
-            <MessageCircle size={14} className="text-emerald-600" />
+            <MessageCircle size={14} className="text-emerald-600 shrink-0" />
             <span>WhatsApp</span>
           </a>
         )}
-
-        <button
-          onClick={() => {
-            document.getElementById('reserva-section')?.scrollIntoView({ behavior: 'smooth' });
-          }}
-          className="btn-solid py-2 px-4 rounded-full text-xs font-bold shadow-sm shrink-0 flex items-center gap-1.5 cursor-pointer"
-        >
-          <CalendarCheck size={14} />
-          <span>Reservar</span>
-        </button>
       </nav>
 
       {/* MODAL: MENÚ DIGITAL COMPLETO */}
