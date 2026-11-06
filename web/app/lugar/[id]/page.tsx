@@ -348,64 +348,6 @@ export default function LugarPage() {
             </div>
           )}
 
-          {/* Barra de Botones de Acción (CTAs Oficiales) */}
-          <div className="mt-5 pt-4 border-t border-black/10">
-            <div className="grid grid-cols-4 gap-2">
-              {/* 1. Ver Menú (Abre menú interactivo estilo PedidosYa) */}
-              <button
-                onClick={() => setMenuDigital(true)}
-                className="py-2.5 px-1 rounded-2xl bg-neutral-50 hover:bg-neutral-100 border border-black/10 text-black flex flex-col items-center justify-center gap-1.5 text-center cursor-pointer transition-all group"
-              >
-                <BookOpen size={16} className="text-black group-hover:scale-110 transition-transform" />
-                <span className="text-[11px] font-semibold leading-tight">Ver Menú</span>
-              </button>
-
-              {/* 2. Reservar (Destacado en negro) */}
-              <button
-                onClick={() => {
-                  document.getElementById('reserva-section')?.scrollIntoView({ behavior: 'smooth' });
-                }}
-                className="py-2.5 px-1 rounded-2xl bg-black text-white hover:bg-neutral-800 border border-black shadow-md flex flex-col items-center justify-center gap-1.5 text-center cursor-pointer transition-all group scale-[1.02]"
-              >
-                <CalendarCheck size={16} className="text-white group-hover:scale-110 transition-transform" />
-                <span className="text-[11px] font-bold leading-tight">Reservar</span>
-              </button>
-
-              {/* 3. Tour 360 */}
-              {b.tour_360 ? (
-                <button
-                  onClick={() => setTourOpen(true)}
-                  className="py-2.5 px-1 rounded-2xl bg-neutral-50 hover:bg-neutral-100 border border-black/10 text-black flex flex-col items-center justify-center gap-1.5 text-center cursor-pointer transition-all group"
-                >
-                  <Glasses size={16} className="text-black group-hover:scale-110 transition-transform" />
-                  <span className="text-[11px] font-semibold leading-tight">Tour 360°</span>
-                </button>
-              ) : (
-                <div className="py-2.5 px-1 rounded-2xl bg-neutral-50/50 border border-black/5 text-neutral-400 flex flex-col items-center justify-center gap-1.5 text-center opacity-40 cursor-not-allowed">
-                  <Glasses size={16} />
-                  <span className="text-[11px] font-medium leading-tight">Tour 360°</span>
-                </div>
-              )}
-
-              {/* 4. WhatsApp */}
-              {b.whatsapp ? (
-                <a
-                  href={`https://wa.me/${b.whatsapp.replace(/\D/g, '')}?text=${encodeURIComponent(`Hola ${b.name}, los contacto desde Bukea para consultar sobre sus mesas y reservas.`)}`}
-                  target="_blank"
-                  rel="noreferrer"
-                  className="py-2.5 px-1 rounded-2xl bg-neutral-50 hover:bg-neutral-100 border border-black/10 text-black flex flex-col items-center justify-center gap-1.5 text-center cursor-pointer transition-all group"
-                >
-                  <MessageCircle size={16} className="text-emerald-600 group-hover:scale-110 transition-transform" />
-                  <span className="text-[11px] font-semibold leading-tight">WhatsApp</span>
-                </a>
-              ) : (
-                <div className="py-2.5 px-1 rounded-2xl bg-neutral-50/50 border border-black/5 text-neutral-400 flex flex-col items-center justify-center gap-1.5 text-center opacity-40">
-                  <MessageCircle size={16} />
-                  <span className="text-[11px] font-medium leading-tight">WhatsApp</span>
-                </div>
-              )}
-            </div>
-          </div>
         </section>
 
         {/* MOTOR DE RESERVA / CONFIRMACIÓN */}
