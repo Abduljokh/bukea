@@ -18,6 +18,7 @@ import {
   ChevronRight,
   ExternalLink,
   BookOpen,
+  CalendarCheck,
   ChevronDown,
   ChevronUp
 } from 'lucide-react';
@@ -347,42 +348,63 @@ export default function LugarPage() {
             </div>
           )}
 
-          {/* Botonera de Acciones Minimalistas (Sin Gradients) */}
-          <div className="mt-5 pt-4 border-t border-black/10 grid grid-cols-3 gap-2">
-            <button
-              onClick={() => setMenuDigital(true)}
-              className="btn-glass text-xs py-2.5 px-2 flex flex-col items-center gap-1.5 text-center justify-center"
-            >
-              <BookOpen size={16} />
-              <span>Ver Menú</span>
-            </button>
-
-            {b.tour_360 ? (
+          {/* Barra de Botones de Acción (CTAs Oficiales) */}
+          <div className="mt-5 pt-4 border-t border-black/10">
+            <div className="grid grid-cols-4 gap-2">
+              {/* 1. Ver Menú (Abre menú interactivo estilo PedidosYa) */}
               <button
-                onClick={() => setTourOpen(true)}
-                className="btn-glass text-xs py-2.5 px-2 flex flex-col items-center gap-1.5 text-center justify-center font-semibold"
+                onClick={() => setMenuDigital(true)}
+                className="py-2.5 px-1 rounded-2xl bg-neutral-50 hover:bg-neutral-100 border border-black/10 text-black flex flex-col items-center justify-center gap-1.5 text-center cursor-pointer transition-all group"
               >
-                <Glasses size={16} />
-                <span>Tour 360°</span>
+                <BookOpen size={16} className="text-black group-hover:scale-110 transition-transform" />
+                <span className="text-[11px] font-semibold leading-tight">Ver Menú</span>
               </button>
-            ) : (
-              <div className="btn-glass text-xs py-2.5 px-2 flex flex-col items-center gap-1.5 text-center opacity-40 justify-center">
-                <Glasses size={16} />
-                <span>Tour 360°</span>
-              </div>
-            )}
 
-            {b.whatsapp ? (
-              <a
-                href={`https://wa.me/${b.whatsapp.replace(/\D/g, '')}?text=${encodeURIComponent(`Hola ${b.name}, los contacto desde Bukea.`)}`}
-                target="_blank"
-                rel="noreferrer"
-                className="btn-glass text-xs py-2.5 px-2 flex flex-col items-center gap-1.5 text-center justify-center"
+              {/* 2. Reservar (Destacado en negro) */}
+              <button
+                onClick={() => {
+                  document.getElementById('reserva-section')?.scrollIntoView({ behavior: 'smooth' });
+                }}
+                className="py-2.5 px-1 rounded-2xl bg-black text-white hover:bg-neutral-800 border border-black shadow-md flex flex-col items-center justify-center gap-1.5 text-center cursor-pointer transition-all group scale-[1.02]"
               >
-                <MessageCircle size={16} />
-                <span>WhatsApp</span>
-              </a>
-            ) : null}
+                <CalendarCheck size={16} className="text-white group-hover:scale-110 transition-transform" />
+                <span className="text-[11px] font-bold leading-tight">Reservar</span>
+              </button>
+
+              {/* 3. Tour 360 */}
+              {b.tour_360 ? (
+                <button
+                  onClick={() => setTourOpen(true)}
+                  className="py-2.5 px-1 rounded-2xl bg-neutral-50 hover:bg-neutral-100 border border-black/10 text-black flex flex-col items-center justify-center gap-1.5 text-center cursor-pointer transition-all group"
+                >
+                  <Glasses size={16} className="text-black group-hover:scale-110 transition-transform" />
+                  <span className="text-[11px] font-semibold leading-tight">Tour 360°</span>
+                </button>
+              ) : (
+                <div className="py-2.5 px-1 rounded-2xl bg-neutral-50/50 border border-black/5 text-neutral-400 flex flex-col items-center justify-center gap-1.5 text-center opacity-40 cursor-not-allowed">
+                  <Glasses size={16} />
+                  <span className="text-[11px] font-medium leading-tight">Tour 360°</span>
+                </div>
+              )}
+
+              {/* 4. WhatsApp */}
+              {b.whatsapp ? (
+                <a
+                  href={`https://wa.me/${b.whatsapp.replace(/\D/g, '')}?text=${encodeURIComponent(`Hola ${b.name}, los contacto desde Bukea para consultar sobre sus mesas y reservas.`)}`}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="py-2.5 px-1 rounded-2xl bg-neutral-50 hover:bg-neutral-100 border border-black/10 text-black flex flex-col items-center justify-center gap-1.5 text-center cursor-pointer transition-all group"
+                >
+                  <MessageCircle size={16} className="text-emerald-600 group-hover:scale-110 transition-transform" />
+                  <span className="text-[11px] font-semibold leading-tight">WhatsApp</span>
+                </a>
+              ) : (
+                <div className="py-2.5 px-1 rounded-2xl bg-neutral-50/50 border border-black/5 text-neutral-400 flex flex-col items-center justify-center gap-1.5 text-center opacity-40">
+                  <MessageCircle size={16} />
+                  <span className="text-[11px] font-medium leading-tight">WhatsApp</span>
+                </div>
+              )}
+            </div>
           </div>
         </section>
 
@@ -628,6 +650,49 @@ export default function LugarPage() {
         </section>
       </main>
 
+      {/* Barra Flotante Inferior de CTAs en Liquid Glass */}
+      <nav className="fixed bottom-4 left-1/2 -translate-x-1/2 z-40 max-w-md w-[92%] liquid-glass-dock rounded-full px-2.5 py-1.5 flex items-center justify-between gap-1 shadow-lg">
+        <button
+          onClick={() => setMenuDigital(true)}
+          className="flex-1 py-1.5 px-2 rounded-full text-black hover:bg-neutral-100 transition-colors flex items-center justify-center gap-1.5 text-xs font-semibold cursor-pointer"
+        >
+          <BookOpen size={14} />
+          <span>Menú</span>
+        </button>
+
+        {b.tour_360 && (
+          <button
+            onClick={() => setTourOpen(true)}
+            className="flex-1 py-1.5 px-2 rounded-full text-black hover:bg-neutral-100 transition-colors flex items-center justify-center gap-1.5 text-xs font-semibold cursor-pointer"
+          >
+            <Glasses size={14} />
+            <span>360°</span>
+          </button>
+        )}
+
+        {b.whatsapp && (
+          <a
+            href={`https://wa.me/${b.whatsapp.replace(/\D/g, '')}?text=${encodeURIComponent(`Hola ${b.name}, los contacto desde Bukea para consultar sobre sus mesas y reservas.`)}`}
+            target="_blank"
+            rel="noreferrer"
+            className="flex-1 py-1.5 px-2 rounded-full text-black hover:bg-neutral-100 transition-colors flex items-center justify-center gap-1.5 text-xs font-semibold"
+          >
+            <MessageCircle size={14} className="text-emerald-600" />
+            <span>WhatsApp</span>
+          </a>
+        )}
+
+        <button
+          onClick={() => {
+            document.getElementById('reserva-section')?.scrollIntoView({ behavior: 'smooth' });
+          }}
+          className="btn-solid py-2 px-4 rounded-full text-xs font-bold shadow-sm shrink-0 flex items-center gap-1.5 cursor-pointer"
+        >
+          <CalendarCheck size={14} />
+          <span>Reservar</span>
+        </button>
+      </nav>
+
       {/* MODAL: MENÚ DIGITAL COMPLETO */}
       {menuDigital && (
         <div className="fixed inset-0 bg-white z-50 overflow-y-auto">
@@ -646,7 +711,16 @@ export default function LugarPage() {
             <div className="w-9" />
           </header>
           <div className="max-w-2xl mx-auto p-4">
-            <MenuDigital />
+            <MenuDigital
+              bizName={b.name}
+              whatsapp={b.whatsapp}
+              onGoToReserve={() => {
+                setMenuDigital(false);
+                setTimeout(() => {
+                  document.getElementById('reserva-section')?.scrollIntoView({ behavior: 'smooth' });
+                }, 150);
+              }}
+            />
           </div>
         </div>
       )}

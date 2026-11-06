@@ -61,6 +61,12 @@
   - El título de la pestaña del navegador también se actualiza dinámicamente como `Bukea × [Nombre]`.
 - **Encabezado Gastronómico Obligatorio:**
   - Dice obligatoriamente **"Comida [TIPO]"** (e.g. *Comida Árabe, Comida Mexicana, Comida Italiana, Comida Fusión Insular*), nunca la palabra genérica "Restaurante".
+- **Barra de Botones de Acción (CTAs Oficiales):**
+  - **1. Ver Menú:** Abre la carta digital interactiva estilo PedidosYa (con buscador en tiempo real, categorías con conteo, tarjetas limpias con fotos y precios, y modal bottom-sheet con ingredientes y botón para reservar).
+  - **2. Reservar:** **Destacado usando color negro** (`bg-black text-white hover:bg-neutral-800`), sobresaliendo visualmente del resto de acciones. Desplaza suavemente al motor de reserva de la mesa.
+  - **3. Tour 360:** Acceso directo al visor inmersivo 360° en pantalla completa.
+  - **4. WhatsApp:** Apertura de chat directo con mensaje personalizado de reserva y consulta.
+  - **Dock Flotante Fijo:** Se replica como barra flotante fija inferior tipo vidrio líquido para acceso táctil permanente mientras se navega por el local.
 - **Platos en Realidad Aumentada (AR):**
   - **Siempre muestra 4 platos fijos iniciales** en rejilla.
   - Botón expansible **"Ver más platos AR"** / **"Ver menos"** si la carta contiene más platos 3D.

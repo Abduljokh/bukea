@@ -302,6 +302,26 @@
       </div>
 
       <div id="modal-res-body" class="space-y-4">
+        <!-- Barra de Botones de Acción (CTAs Oficiales) -->
+        <div class="grid grid-cols-4 gap-2 pb-3 border-b border-black/10">
+          <button type="button" onclick="openMenuModal()" class="py-2 px-1 rounded-xl bg-neutral-50 hover:bg-neutral-100 border border-black/10 text-black flex flex-col items-center justify-center gap-1 text-center transition-all cursor-pointer group">
+            <i data-lucide="book-open" class="w-4 h-4 text-black group-hover:scale-110 transition-transform"></i>
+            <span class="text-[10px] font-semibold leading-tight">Ver Menú</span>
+          </button>
+          <button type="button" class="py-2 px-1 rounded-xl bg-black text-white border border-black flex flex-col items-center justify-center gap-1 text-center shadow-sm scale-[1.02]">
+            <i data-lucide="calendar" class="w-4 h-4 text-white"></i>
+            <span class="text-[10px] font-bold leading-tight">Reservar</span>
+          </button>
+          <button type="button" id="modal-cta-tour" onclick="openTourFromModal()" class="py-2 px-1 rounded-xl bg-neutral-50 hover:bg-neutral-100 border border-black/10 text-black flex flex-col items-center justify-center gap-1 text-center transition-all cursor-pointer group">
+            <i data-lucide="glasses" class="w-4 h-4 text-black group-hover:scale-110 transition-transform"></i>
+            <span class="text-[10px] font-semibold leading-tight">Tour 360°</span>
+          </button>
+          <a id="modal-cta-wa" href="#" target="_blank" class="py-2 px-1 rounded-xl bg-neutral-50 hover:bg-neutral-100 border border-black/10 text-black flex flex-col items-center justify-center gap-1 text-center transition-all group">
+            <i data-lucide="message-circle" class="w-4 h-4 text-emerald-600 group-hover:scale-110 transition-transform"></i>
+            <span class="text-[10px] font-semibold leading-tight">WhatsApp</span>
+          </a>
+        </div>
+
         <div>
           <label class="block text-xs font-semibold text-neutral-700 mb-1.5">Comensales</label>
           <div class="grid grid-cols-4 gap-2">
@@ -353,6 +373,47 @@
           <div id="success-code" class="text-xl font-mono font-bold tracking-wider text-black mt-1">BK-92F4</div>
         </div>
         <button onclick="closeModal('modal-reserva'); openWalletModal();" class="btn-solid text-xs py-2 px-6">Ver en mi Pase Digital</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL: MENÚ DIGITAL COMPLETO ESTILO PEDIDOSYA -->
+  <div id="modal-menu" class="fixed inset-0 bg-black/40 backdrop-blur-sm z-50 hidden items-center justify-center p-3 sm:p-4">
+    <div class="bg-white border border-black/10 rounded-3xl max-w-lg w-full p-6 shadow-2xl max-h-[90vh] overflow-y-auto font-text">
+      <div class="flex items-center justify-between pb-3 border-b border-black/10 mb-4 sticky top-0 bg-white z-10">
+        <div>
+          <span class="text-[10px] uppercase font-bold text-neutral-400 tracking-wider">Carta Gastronómica</span>
+          <h3 id="modal-menu-title" class="font-bold text-base text-black">Menú Digital</h3>
+        </div>
+        <button onclick="closeModal('modal-menu')" class="w-8 h-8 rounded-full bg-neutral-100 flex items-center justify-center text-neutral-600 hover:text-black cursor-pointer">
+          <i data-lucide="x" class="w-4 h-4"></i>
+        </button>
+      </div>
+
+      <!-- Buscador de Platos -->
+      <div class="relative mb-3">
+        <i data-lucide="search" class="w-3.5 h-3.5 text-neutral-400 absolute left-3 top-1/2 -translate-y-1/2"></i>
+        <input
+          type="text"
+          id="menu-search-input"
+          oninput="handleMenuSearch(this.value)"
+          placeholder="Buscar plato o ingrediente…"
+          class="w-full bg-neutral-100/80 border border-black/10 rounded-xl pl-9 pr-3 py-2 text-xs text-black placeholder-neutral-400 focus:outline-none"
+        />
+      </div>
+
+      <!-- Selector de Categorías -->
+      <div class="flex gap-1.5 overflow-x-auto pb-2 mb-3 scrollbar-none" id="menu-cat-chips">
+        <button onclick="setMenuCat('Todos', this)" class="menu-cat-btn px-3 py-1 rounded-full text-xs font-semibold bg-black text-white cursor-pointer">Todos</button>
+        <button onclick="setMenuCat('Entradas', this)" class="menu-cat-btn px-3 py-1 rounded-full text-xs font-semibold bg-neutral-100 text-neutral-700 hover:bg-neutral-200 cursor-pointer">Entradas</button>
+        <button onclick="setMenuCat('Del mar', this)" class="menu-cat-btn px-3 py-1 rounded-full text-xs font-semibold bg-neutral-100 text-neutral-700 hover:bg-neutral-200 cursor-pointer">Del mar</button>
+        <button onclick="setMenuCat('Parrilla', this)" class="menu-cat-btn px-3 py-1 rounded-full text-xs font-semibold bg-neutral-100 text-neutral-700 hover:bg-neutral-200 cursor-pointer">Parrilla</button>
+        <button onclick="setMenuCat('Postres', this)" class="menu-cat-btn px-3 py-1 rounded-full text-xs font-semibold bg-neutral-100 text-neutral-700 hover:bg-neutral-200 cursor-pointer">Postres</button>
+      </div>
+
+      <!-- Lista de Platos en Tarjetas PedidosYa -->
+      <div id="menu-items-list" class="space-y-2.5 mb-4">
+        <!-- Renderizado dinámico -->
       </div>
     </div>
   </div>
@@ -748,9 +809,97 @@
       state.selectedBiz = biz;
       document.getElementById('modal-res-name').innerHTML = `<span class="font-logo text-2xl font-normal leading-none pt-0.5">Bukea</span> <span class="text-sm text-neutral-400 font-light">×</span> ${biz.name}`;
       document.getElementById('modal-res-cuisine').innerText = biz.cuisine;
+      
+      // Configurar CTAs del modal
+      const waBtn = document.getElementById('modal-cta-wa');
+      if (waBtn) {
+        waBtn.href = `https://wa.me/584120000000?text=${encodeURIComponent('Hola ' + biz.name + ', los contacto desde Bukea para consultar sobre sus mesas y carta.')}`;
+      }
+      const tourBtn = document.getElementById('modal-cta-tour');
+      if (tourBtn) {
+        if (biz.tour_360) {
+          tourBtn.classList.remove('opacity-40', 'cursor-not-allowed');
+          tourBtn.classList.add('cursor-pointer');
+        } else {
+          tourBtn.classList.add('opacity-40', 'cursor-not-allowed');
+          tourBtn.classList.remove('cursor-pointer');
+        }
+      }
+
       document.getElementById('modal-res-body').classList.remove('hidden');
       document.getElementById('modal-res-success').classList.add('hidden');
       openModal('modal-reserva');
+    }
+
+    function openTourFromModal() {
+      if (state.selectedBiz && state.selectedBiz.tour_360) {
+        openTour(state.selectedBiz.tour_360);
+      } else {
+        alert('Este local aún no cuenta con tour virtual 360° digitalizado.');
+      }
+    }
+
+    const DISHES_DATA = [
+      { name: 'Carpaccio de Atún Aleta Amarilla', cat: 'Entradas', price: '$15', desc: 'Láminas finas con alcaparras crocantes y aceite trufado.', photo: 'https://images.unsplash.com/photo-1544025162-d76694265947?auto=format&fit=crop&w=800&q=80', isStar: true },
+      { name: 'Ceviche Mixto Playa El Agua', cat: 'Entradas', price: '$16', desc: 'Pesca del día con leche de tigre al ají margariteño.', photo: 'https://images.unsplash.com/photo-1535400255456-984241443b29?auto=format&fit=crop&w=800&q=80', isStar: true },
+      { name: 'Langostinos al Fuego de Leña', cat: 'Del mar', price: '$28', desc: 'Langostinos jumbo marinados en hierbas frescas y mantequilla noisette.', photo: 'https://images.unsplash.com/photo-1553240799-36bbf332a5c3?auto=format&fit=crop&w=800&q=80', isStar: true },
+      { name: 'Mero en Costra de Almendras', cat: 'Del mar', price: '$24', desc: 'Filete de mero blanco sobre puré rústico de batata.', photo: 'https://images.unsplash.com/photo-1519708227418-c8fd9a32b7a2?auto=format&fit=crop&w=800&q=80', isStar: false },
+      { name: 'Ribeye Angus 400g Madurado', cat: 'Parrilla', price: '$34', desc: 'Corte premium 28 días con chimichurri rústico de la casa.', photo: 'https://images.unsplash.com/photo-1558030006-450675393462?auto=format&fit=crop&w=800&q=80', isStar: true },
+      { name: 'Volcán de Cacao Venezolano', cat: 'Postres', price: '$9', desc: 'Cacao de Chuao al 70% con corazón fundido y helado de vainilla.', photo: 'https://images.unsplash.com/photo-1606313564200-e75d5e30476c?auto=format&fit=crop&w=800&q=80', isStar: true }
+    ];
+
+    let menuState = { cat: 'Todos', query: '' };
+
+    function openMenuModal() {
+      const bizName = state.selectedBiz ? state.selectedBiz.name : 'el restaurante';
+      document.getElementById('modal-menu-title').innerText = 'Carta de ' + bizName;
+      renderMenuItems();
+      openModal('modal-menu');
+    }
+
+    function setMenuCat(cat, btn) {
+      menuState.cat = cat;
+      document.querySelectorAll('.menu-cat-btn').forEach(b => {
+        b.className = 'menu-cat-btn px-3 py-1 rounded-full text-xs font-semibold bg-neutral-100 text-neutral-700 hover:bg-neutral-200 cursor-pointer';
+      });
+      btn.className = 'menu-cat-btn px-3 py-1 rounded-full text-xs font-semibold bg-black text-white cursor-pointer';
+      renderMenuItems();
+    }
+
+    function handleMenuSearch(q) {
+      menuState.query = q.toLowerCase();
+      renderMenuItems();
+    }
+
+    function renderMenuItems() {
+      const container = document.getElementById('menu-items-list');
+      const filtered = DISHES_DATA.filter(d => {
+        const matchCat = menuState.cat === 'Todos' || d.cat === menuState.cat;
+        const matchQ = !menuState.query || d.name.toLowerCase().includes(menuState.query) || d.desc.toLowerCase().includes(menuState.query);
+        return matchCat && matchQ;
+      });
+
+      if (filtered.length === 0) {
+        container.innerHTML = '<div class="p-6 text-center text-xs text-neutral-400">No hay platos que coincidan.</div>';
+        return;
+      }
+
+      container.innerHTML = filtered.map(d => `
+        <div class="p-3 rounded-2xl bg-white border border-black/8 flex items-center justify-between gap-3">
+          <div class="flex-1 min-w-0 pr-1">
+            <div class="flex items-center gap-1.5 mb-0.5">
+              ${d.isStar ? '<span class="text-[9px] font-bold uppercase bg-neutral-100 px-1 py-0.2 rounded border border-black/5 text-black">★ Estrella</span>' : ''}
+              <span class="text-[10px] text-neutral-400 font-semibold uppercase">${d.cat}</span>
+            </div>
+            <h4 class="font-bold text-xs text-black truncate">${d.name}</h4>
+            <p class="text-[11px] text-neutral-500 line-clamp-1 mt-0.5">${d.desc}</p>
+            <div class="font-mono font-bold text-xs text-black mt-1">${d.price}</div>
+          </div>
+          <div class="w-16 h-16 rounded-xl overflow-hidden bg-neutral-100 shrink-0 border border-black/8">
+            <img src="${d.photo}" alt="${d.name}" class="w-full h-full object-cover" loading="lazy" />
+          </div>
+        </div>
+      `).join('');
     }
 
     function selectGuests(n, btn) {
