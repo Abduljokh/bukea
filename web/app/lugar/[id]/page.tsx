@@ -7,7 +7,6 @@ import {
   Share2, 
   Star, 
   MapPin, 
-  Glasses, 
   Box, 
   MessageCircle, 
   Calendar, 
@@ -592,32 +591,22 @@ export default function LugarPage() {
         </section>
       </main>
 
-      {/* Barra Flotante Inferior de CTAs en Liquid Glass */}
-      <nav className="fixed bottom-4 left-1/2 -translate-x-1/2 z-40 max-w-md w-[92%] liquid-glass-dock rounded-full px-2.5 py-1.5 flex items-center justify-between gap-1 shadow-lg">
+      {/* Barra Flotante Inferior de CTAs en Frosted Glass Sólido */}
+      <nav className="fixed bottom-5 left-1/2 -translate-x-1/2 z-40 max-w-sm w-[90%] liquid-glass-dock rounded-full p-1.5 flex items-center justify-between gap-1 shadow-2xl">
         <button
           onClick={() => setMenuDigital(true)}
-          className="flex-1 py-1.5 px-2 rounded-full text-black hover:bg-neutral-100 transition-colors flex items-center justify-center gap-1.5 text-xs font-semibold cursor-pointer"
+          className="flex-1 py-2 px-3 rounded-full text-black hover:bg-neutral-100 transition-colors flex items-center justify-center gap-1.5 text-xs font-semibold cursor-pointer"
         >
           <BookOpen size={14} />
-          <span>Menú</span>
+          <span>Ver Menú</span>
         </button>
-
-        {b.tour_360 && (
-          <button
-            onClick={() => setTourOpen(true)}
-            className="flex-1 py-1.5 px-2 rounded-full text-black hover:bg-neutral-100 transition-colors flex items-center justify-center gap-1.5 text-xs font-semibold cursor-pointer"
-          >
-            <Glasses size={14} />
-            <span>360°</span>
-          </button>
-        )}
 
         {b.whatsapp && (
           <a
             href={`https://wa.me/${b.whatsapp.replace(/\D/g, '')}?text=${encodeURIComponent(`Hola ${b.name}, los contacto desde Bukea para consultar sobre sus mesas y reservas.`)}`}
             target="_blank"
             rel="noreferrer"
-            className="flex-1 py-1.5 px-2 rounded-full text-black hover:bg-neutral-100 transition-colors flex items-center justify-center gap-1.5 text-xs font-semibold"
+            className="flex-1 py-2 px-3 rounded-full text-black hover:bg-neutral-100 transition-colors flex items-center justify-center gap-1.5 text-xs font-semibold"
           >
             <MessageCircle size={14} className="text-emerald-600" />
             <span>WhatsApp</span>
