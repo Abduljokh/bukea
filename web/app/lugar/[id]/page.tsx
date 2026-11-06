@@ -34,6 +34,7 @@ import MapaGoogle from './MapaGoogle';
 import ReviewsList from './ReviewsList';
 import CarruselFotos from './CarruselFotos';
 import MenuDigital from './MenuDigital';
+import CheckoutStepper from './CheckoutStepper';
 
 const fmtTime = (s: string) => {
   try {
@@ -72,6 +73,7 @@ export default function LugarPage() {
   const [tourOpen, setTourOpen] = useState(false);
   const [arDish, setArDish] = useState<Dish | null>(null);
   const [showAllAr, setShowAllAr] = useState(false);
+  const [checkoutOpen, setCheckoutOpen] = useState(false);
 
   // Buscar negocio (API o Mock)
   useEffect(() => {
@@ -146,80 +148,64 @@ export default function LugarPage() {
   // Lista a mostrar: 4 fijos por defecto, expandible si el usuario pulsa "Ver más"
   const visibleArDishes = showAllAr ? arDishesList : arDishesList.slice(0, 4);
 
-  const handleReservar = async () => {
+  const handleStartCheckout = () => {
     setErr('');
     if (!sel) {
       setErr('Por favor selecciona un horario para tu reserva.');
       return;
     }
+    setCheckoutOpen(true);
+  };
 
-    setLoading(true);
+  const handleCheckoutSuccess = async (
+    finalCode: string, 
+    guestData: { name: string; phone: string; notes: string }
+  ) => {
+    setName(guestData.name);
+    setPhone(guestData.phone);
+    setCode(finalCode);
+    setCheckoutOpen(false);
 
     try {
-      const res = await fetch('/api/web/reservations', {
+      await fetch('/api/web/reservations', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           business_id: id,
-          guest_name: name || 'Invitado Bukea',
-          guest_phone: phone || '',
+          guest_name: guestData.name,
+          guest_phone: guestData.phone,
           guest_size: size,
-          slot_start: sel.start,
+          slot_start: sel?.start,
+          notes: guestData.notes,
         }),
-      }).then(r => r.json());
-
-      const finalCode = res.reservation?.code || `BK-${Math.random().toString(36).substring(2, 6).toUpperCase()}`;
-      setCode(finalCode);
-
-      if (b) {
-        const newReservation: StoredReservation = {
-          code: finalCode,
-          businessId: b.id,
-          businessName: b.name,
-          businessImage: b.heroImage,
-          businessAddress: b.address,
-          date: fmtDate(date),
-          time: fmtTime(sel.start),
-          guests: size,
-          guestName: name || 'Invitado Bukea',
-          guestPhone: phone || '',
-          status: 'confirmada',
-          createdAt: new Date().toISOString(),
-          perks: b.perks || ['Atención preferencial Bukea'],
-        };
-
-        const existing = JSON.parse(localStorage.getItem('bukea_reservations') || '[]');
-        const updated = [newReservation, ...existing.filter((x: any) => x.code !== finalCode)];
-        localStorage.setItem('bukea_reservations', JSON.stringify(updated));
-      }
-
-      window.scrollTo({ top: 0, behavior: 'smooth' });
+      });
     } catch {
-      const localCode = `BK-${Math.random().toString(36).substring(2, 6).toUpperCase()}`;
-      setCode(localCode);
-      if (b) {
-        const newReservation: StoredReservation = {
-          code: localCode,
-          businessId: b.id,
-          businessName: b.name,
-          businessImage: b.heroImage,
-          businessAddress: b.address,
-          date: fmtDate(date),
-          time: fmtTime(sel.start),
-          guests: size,
-          guestName: name || 'Invitado Bukea',
-          guestPhone: phone || '',
-          status: 'confirmada',
-          createdAt: new Date().toISOString(),
-          perks: b.perks || ['Atención preferencial Bukea'],
-        };
-        const existing = JSON.parse(localStorage.getItem('bukea_reservations') || '[]');
-        localStorage.setItem('bukea_reservations', JSON.stringify([newReservation, ...existing]));
-      }
-      window.scrollTo({ top: 0, behavior: 'smooth' });
-    } finally {
-      setLoading(false);
+      // fallback
     }
+
+    if (b) {
+      const newReservation: StoredReservation = {
+        code: finalCode,
+        businessId: b.id,
+        businessName: b.name,
+        businessImage: b.heroImage,
+        businessAddress: b.address,
+        date: fmtDate(date),
+        time: sel ? fmtTime(sel.start) : '',
+        guests: size,
+        guestName: guestData.name,
+        guestPhone: guestData.phone,
+        status: 'confirmada',
+        createdAt: new Date().toISOString(),
+        perks: b.perks || ['Atención preferencial Bukea'],
+      };
+
+      const existing = JSON.parse(localStorage.getItem('bukea_reservations') || '[]');
+      const updated = [newReservation, ...existing.filter((x: any) => x.code !== finalCode)];
+      localStorage.setItem('bukea_reservations', JSON.stringify(updated));
+    }
+
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
   if (!b) {
@@ -454,18 +440,11 @@ export default function LugarPage() {
 
               {/* Botón de Continuar */}
               <button
-                onClick={handleReservar}
-                disabled={loading}
+                onClick={handleStartCheckout}
                 className="btn-solid w-full py-3.5 text-sm font-semibold flex items-center justify-center gap-2"
               >
-                {loading ? (
-                  <span>Procesando…</span>
-                ) : (
-                  <>
-                    <span>Continuar con la Reserva{sel ? ` · ${fmtTime(sel.start)}` : ''}</span>
-                    <ChevronRight size={16} />
-                  </>
-                )}
+                <span>Continuar con la Reserva{sel ? ` · ${fmtTime(sel.start)}` : ''}</span>
+                <ChevronRight size={16} />
               </button>
             </div>
           )}
@@ -683,6 +662,19 @@ export default function LugarPage() {
             </button>
           </div>
         </div>
+      )}
+
+      {/* CHECKOUT: ACORDION STEPPER */}
+      {b && (
+        <CheckoutStepper
+          isOpen={checkoutOpen}
+          onClose={() => setCheckoutOpen(false)}
+          business={b}
+          date={date}
+          slot={sel}
+          size={size}
+          onSuccess={handleCheckoutSuccess}
+        />
       )}
     </div>
   );
