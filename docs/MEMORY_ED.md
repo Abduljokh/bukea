@@ -134,6 +134,10 @@ URL red Wi-Fi / Router (móviles): **http://192.168.1.2:3000**
 - `7127773`: Frosted glass sólido en el dock flotante (`rgba(255,255,255,0.94)`, blur 24px, borde y sombras nítidas) y remoción del botón 360° del dock (para integrarlo directamente en el primer slide del carrusel).
 - `46a3d0f`: Reordenamiento del dock flotante con Reservar al centro (`[Ver Menú] | [Reservar] | [WhatsApp]`), remoción de campos de contacto del paso 1 de reserva y cambio de CTA a "Continuar con la Reserva".
 - `295e6f3`: Implementación completa del Checkout Rápido con Accordion Stepper colapsable de 3 pasos (`CheckoutStepper.tsx`), Escudo Anti-Spam (Abono $1 USD / Puntos Bukea), métodos C2P Débito Inmediato y Pago Móvil Directo con timer de mesa retenida.
+- `18b5577`: Documentación del Checkout Stepper colapsable y Escudo Anti-Spam en memoria técnica.
+- `3101820`: Configuración del servidor en puerto 3000 con escucha en todas las interfaces (`0.0.0.0`) e IP local `192.168.1.2` para pruebas en móviles.
+- `26a7fe4`: Corrección de padding/overlap en inputs y selects, adición de Binance Pay y Stripe, separación de Identidad en dos campos (con opción Pasaporte condicional a Binance/Stripe) y actualización de política no reembolsable (crédito en mesa o Puntos Bukea $1 = 1 pto).
+
 
 
 
