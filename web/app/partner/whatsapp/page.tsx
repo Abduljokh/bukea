@@ -76,10 +76,12 @@ const INITIAL_CHATS: ChatConversation[] = [
 ];
 
 export default function PartnerWhatsAppPage() {
-  const { business } = usePartner();
+  const { business, toggleAiSetting } = usePartner();
   const [chats, setChats] = useState<ChatConversation[]>(INITIAL_CHATS);
   const [activeChatId, setActiveChatId] = useState<string>('chat-1');
   const [inputText, setInputText] = useState('');
+
+  const isGlobalAiEnabled = business.aiSettings?.whatsappAutoReply ?? true;
 
   const activeChat = chats.find((c) => c.id === activeChatId) || chats[0];
 
@@ -116,7 +118,7 @@ export default function PartnerWhatsAppPage() {
 
   return (
     <div className="space-y-6 animate-in fade-in-50 duration-200">
-      {/* HEADER WHATSAPP */}
+      {/* HEADER WHATSAPP & TOGGLE IA */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-neutral-200">
         <div>
           <div className="flex items-center gap-2">
@@ -131,7 +133,51 @@ export default function PartnerWhatsAppPage() {
             Bandeja unificada con respuestas automáticas de Bukea Bot para menús, ubicación y reservas, con control de handoff a operador humano.
           </p>
         </div>
+
+        {/* TOGGLE GLOBAL IA AUTO-RESPONDER */}
+        <div className="flex items-center gap-3">
+          <div className="text-right hidden sm:block">
+            <span className="text-xs font-bold text-neutral-900 block">
+              Auto-Responder IA
+            </span>
+            <span className="text-[10px] text-neutral-400">
+              {isGlobalAiEnabled ? 'Responde menús, reservas y FAQs' : 'Pausado (Atención humana)'}
+            </span>
+          </div>
+
+          <button
+            type="button"
+            onClick={() => toggleAiSetting('whatsappAutoReply')}
+            className={`px-3.5 py-2 rounded-xl text-xs font-bold flex items-center gap-2 transition-all border ${
+              isGlobalAiEnabled
+                ? 'bg-emerald-600 hover:bg-emerald-700 text-white border-emerald-700 shadow-xs'
+                : 'bg-neutral-100 hover:bg-neutral-200 text-neutral-700 border-neutral-300'
+            }`}
+          >
+            <Bot className={`w-4 h-4 ${isGlobalAiEnabled ? 'text-white' : 'text-neutral-500'}`} />
+            <span>{isGlobalAiEnabled ? 'IA WhatsApp: ON' : 'IA WhatsApp: OFF'}</span>
+          </button>
+        </div>
       </div>
+
+      {/* BANNER INFORMATIVO SI LA IA ESTÁ DESACTIVADA */}
+      {!isGlobalAiEnabled && (
+        <div className="p-3.5 rounded-2xl bg-amber-50 border border-amber-200 text-amber-900 text-xs flex items-center justify-between gap-3 animate-in fade-in duration-150">
+          <div className="flex items-center gap-2">
+            <Bot className="w-4 h-4 text-amber-600 shrink-0" />
+            <span>
+              <strong>Modo Manual Activo:</strong> La IA de WhatsApp está desactivada. Todos los mensajes entrantes deben ser respondidos manualmente por tu equipo de recepción.
+            </span>
+          </div>
+          <button
+            type="button"
+            onClick={() => toggleAiSetting('whatsappAutoReply', true)}
+            className="px-3 py-1 rounded-lg bg-amber-600 text-white font-bold text-[11px] hover:bg-amber-700 shrink-0"
+          >
+            Reactivar IA
+          </button>
+        </div>
+      )}
 
       {/* BANDEJA TIPO WHATSAPP */}
       <div className="bg-white rounded-2xl border border-neutral-200/80 shadow-xs overflow-hidden grid grid-cols-1 md:grid-cols-3 min-h-[560px]">

@@ -21,6 +21,7 @@ import {
   Eye,
   CheckCircle2,
   Layers,
+  Bot,
 } from 'lucide-react';
 import { usePartner } from '../PartnerContext';
 import { PartnerDish, PartnerTable } from '../data/partnerData';
@@ -37,9 +38,11 @@ export default function PartnerPreferenciasPage() {
     deleteDish,
     reorderDish,
     toggleDishAvailability,
+    toggleAiSetting,
+    updateAiSettings,
   } = usePartner();
 
-  const [activeTab, setActiveTab] = useState<'info' | 'horarios' | 'menu' | 'mesas'>('info');
+  const [activeTab, setActiveTab] = useState<'info' | 'horarios' | 'menu' | 'mesas' | 'ia'>('info');
 
   // Estado del formulario de Información General
   const [formData, setFormData] = useState({
@@ -251,6 +254,7 @@ export default function PartnerPreferenciasPage() {
             : []),
           { id: 'horarios', label: 'Horarios & Capacidad', icon: Clock },
           { id: 'menu', label: 'Gestor de Menú / Carta', icon: UtensilsCrossed },
+          { id: 'ia', label: 'Automatizaciones IA', icon: Bot },
         ].map((tab) => {
           const Icon = tab.icon;
           const isActive = activeTab === tab.id;
@@ -957,6 +961,147 @@ export default function PartnerPreferenciasPage() {
                   </div>
                 ))
               )}
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* =========================================================================
+          PESTAÑA 5: AUTOMATIZACIONES DE INTELIGENCIA ARTIFICIAL (IA)
+          ========================================================================= */}
+      {activeTab === 'ia' && (
+        <div className="space-y-6">
+          <div className="bg-white rounded-2xl border border-neutral-200/80 p-6 shadow-xs space-y-6">
+            <div>
+              <div className="flex items-center gap-2">
+                <h3 className="text-base font-bold text-neutral-900">
+                  Automatizaciones de Inteligencia Artificial
+                </h3>
+                <span className="text-[10px] font-bold uppercase tracking-wider text-neutral-900 bg-neutral-100 px-2 py-0.5 rounded border border-neutral-200">
+                  Bukea AI Engine
+                </span>
+              </div>
+              <p className="text-xs text-neutral-400 mt-0.5">
+                Controla dónde y cómo la inteligencia artificial asiste a tu negocio en WhatsApp y en las respuestas públicas de reseñas.
+              </p>
+            </div>
+
+            {/* TOGGLE 1: IA EN WHATSAPP */}
+            <div className="p-5 rounded-2xl border border-neutral-200 bg-neutral-50/50 space-y-4">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                <div className="flex items-start gap-3">
+                  <div className="w-10 h-10 rounded-xl bg-emerald-100 text-emerald-800 flex items-center justify-center shrink-0">
+                    <Bot className="w-5 h-5" />
+                  </div>
+                  <div>
+                    <h4 className="text-sm font-bold text-neutral-900">
+                      Chatbot Inteligente en WhatsApp
+                    </h4>
+                    <p className="text-xs text-neutral-500 mt-0.5 max-w-lg leading-relaxed">
+                      Responde instantáneamente preguntas de comensales sobre la carta, precios, ubicación, disponibilidad y confirmación de mesa.
+                    </p>
+                  </div>
+                </div>
+
+                <button
+                  type="button"
+                  onClick={() => toggleAiSetting('whatsappAutoReply')}
+                  className={`px-4 py-2 rounded-xl text-xs font-bold transition-all shrink-0 border ${
+                    business.aiSettings?.whatsappAutoReply
+                      ? 'bg-emerald-600 hover:bg-emerald-700 text-white border-emerald-700 shadow-xs'
+                      : 'bg-white text-neutral-700 border-neutral-300 hover:bg-neutral-100'
+                  }`}
+                >
+                  {business.aiSettings?.whatsappAutoReply ? 'Activado (ON)' : 'Pausado (OFF)'}
+                </button>
+              </div>
+
+              <div className="pt-3 border-t border-neutral-200/70 text-xs text-neutral-500 flex flex-wrap gap-4">
+                <span>Capacidades activas:</span>
+                <span className="font-semibold text-neutral-700">· Enlace a Menú Digital</span>
+                <span className="font-semibold text-neutral-700">· Ubicación GPS y Google Maps</span>
+                <span className="font-semibold text-neutral-700">· Confirmación de Reserva</span>
+                <span className="font-semibold text-neutral-700">· Handoff automático a humano ante quejas</span>
+              </div>
+            </div>
+
+            {/* TOGGLE 2: IA EN RESEÑAS VERIFICADAS */}
+            <div className="p-5 rounded-2xl border border-neutral-200 bg-neutral-50/50 space-y-4">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                <div className="flex items-start gap-3">
+                  <div className="w-10 h-10 rounded-xl bg-amber-100 text-amber-800 flex items-center justify-center shrink-0">
+                    <Sparkles className="w-5 h-5" />
+                  </div>
+                  <div>
+                    <h4 className="text-sm font-bold text-neutral-900">
+                      Auto-Respuesta con IA en Reseñas Verificadas
+                    </h4>
+                    <p className="text-xs text-neutral-500 mt-0.5 max-w-lg leading-relaxed">
+                      Genera respuestas cordiales y personalizadas citando al cliente por su nombre y el plato consumido.
+                    </p>
+                  </div>
+                </div>
+
+                <button
+                  type="button"
+                  onClick={() => toggleAiSetting('reviewsAutoReply')}
+                  className={`px-4 py-2 rounded-xl text-xs font-bold transition-all shrink-0 border ${
+                    business.aiSettings?.reviewsAutoReply
+                      ? 'bg-neutral-900 hover:bg-black text-white border-neutral-900 shadow-xs'
+                      : 'bg-white text-neutral-700 border-neutral-300 hover:bg-neutral-100'
+                  }`}
+                >
+                  {business.aiSettings?.reviewsAutoReply ? 'Activado (ON)' : 'Pausado (OFF)'}
+                </button>
+              </div>
+
+              {/* Parámetros de Reseñas */}
+              <div className="pt-3 border-t border-neutral-200/70 space-y-3">
+                <div>
+                  <label className="text-xs font-bold text-neutral-800 block mb-1.5">
+                    Tono de Voz de la IA:
+                  </label>
+                  <div className="grid grid-cols-3 gap-2 max-w-md">
+                    {[
+                      { id: 'elegante', label: 'Elegante & Distinguido' },
+                      { id: 'calido', label: 'Cálido & Hospitalario' },
+                      { id: 'casual', label: 'Casual & Cercano' },
+                    ].map((tone) => (
+                      <button
+                        key={tone.id}
+                        type="button"
+                        onClick={() => updateAiSettings({ reviewsTone: tone.id as any })}
+                        className={`py-2 px-2 text-xs font-semibold rounded-xl border text-center transition-all ${
+                          business.aiSettings?.reviewsTone === tone.id
+                            ? 'border-neutral-900 bg-neutral-900 text-white shadow-xs'
+                            : 'border-neutral-200 bg-white text-neutral-700 hover:bg-neutral-100'
+                        }`}
+                      >
+                        {tone.label}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+                <div className="pt-2">
+                  <label className="flex items-center gap-2 cursor-pointer">
+                    <input
+                      type="checkbox"
+                      checked={business.aiSettings?.onlyPositiveReviewsAutoReply ?? true}
+                      onChange={(e) =>
+                        updateAiSettings({ onlyPositiveReviewsAutoReply: e.target.checked })
+                      }
+                      className="rounded border-neutral-300 text-neutral-900 focus:ring-neutral-900"
+                    />
+                    <span className="text-xs font-semibold text-neutral-800">
+                      Protección Reputacional: Sólo auto-responder valoraciones de 4 y 5 estrellas.
+                    </span>
+                  </label>
+                  <p className="text-[11px] text-neutral-400 pl-5 mt-0.5">
+                    Las calificaciones menores a 4 estrellas requerirán revisión y aprobación humana obligatoria antes de ser publicadas.
+                  </p>
+                </div>
+              </div>
             </div>
           </div>
         </div>

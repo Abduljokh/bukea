@@ -31,6 +31,9 @@ interface PartnerContextType {
   // Waitlist
   addWaitlistEntry: (entry: Omit<WaitlistEntry, 'id' | 'status' | 'waitMinutes'>) => void;
   updateWaitlistStatus: (id: string, status: WaitlistEntry['status']) => void;
+  // AI Settings Toggles
+  toggleAiSetting: (key: 'whatsappAutoReply' | 'reviewsAutoReply', value?: boolean) => void;
+  updateAiSettings: (settings: Partial<PartnerBusinessProfile['aiSettings']>) => void;
   // Reservation status
   updateReservationStatus: (id: string, status: PartnerReservation['status']) => void;
 }
@@ -233,6 +236,40 @@ export function PartnerProvider({ children }: { children: React.ReactNode }) {
     }));
   };
 
+  const toggleAiSetting = (key: 'whatsappAutoReply' | 'reviewsAutoReply', value?: boolean) => {
+    updateActiveBusiness((b) => {
+      const currentAi = b.aiSettings || {
+        whatsappAutoReply: true,
+        reviewsAutoReply: true,
+        reviewsTone: 'elegante',
+        onlyPositiveReviewsAutoReply: true,
+      };
+      const nextVal = value !== undefined ? value : !currentAi[key];
+      return {
+        ...b,
+        aiSettings: {
+          ...currentAi,
+          [key]: nextVal,
+        },
+      };
+    });
+  };
+
+  const updateAiSettings = (settings: Partial<PartnerBusinessProfile['aiSettings']>) => {
+    updateActiveBusiness((b) => ({
+      ...b,
+      aiSettings: {
+        ...(b.aiSettings || {
+          whatsappAutoReply: true,
+          reviewsAutoReply: true,
+          reviewsTone: 'elegante',
+          onlyPositiveReviewsAutoReply: true,
+        }),
+        ...settings,
+      },
+    }));
+  };
+
   const updateReservationStatus = (id: string, status: PartnerReservation['status']) => {
     updateActiveBusiness((b) => ({
       ...b,
@@ -261,6 +298,8 @@ export function PartnerProvider({ children }: { children: React.ReactNode }) {
         addWaitlistEntry,
         updateWaitlistStatus,
         updateReservationStatus,
+        toggleAiSetting,
+        updateAiSettings,
       }}
     >
       {children}

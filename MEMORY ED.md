@@ -83,10 +83,12 @@
      - Scoring predictivo de No-Show (0% a 100%), análisis de LTV, detección de comensales Prime/VIP y alertas de cortesía de bienvenida.
   6. **WhatsApp Chatbot (`/partner/whatsapp`):**
      - Bandeja de mensajes integrada con bot AI y conmutador a operador humano.
+     - **Toggle Global de Auto-Responder IA:** Switch para alternar entre piloto automático (menús, reservas, Google Maps, FAQs) y atención humana manual.
   7. **Cupones & Yield Management (`/partner/cupones`):**
      - Descuentos valle (15% a 30% / 2x1) autofinanciados por el negocio con candado de pago por Bukea-Pay.
   8. **Reseñas & Reputación (`/partner/reputacion`):**
      - Escudo de reseñas verificadas exclusivas de comensales que pagaron o asistieron.
+     - **Toggle de IA para Reseñas:** Switch de auto-generación de respuestas, selector de tono (*Elegante*, *Cálido*, *Casual*), filtro de protección anti-crisis (auto-responder solo 4 y 5 estrellas) y botón *"Generar Respuesta con IA"* por comensal.
   - El título de la pestaña del navegador también se actualiza dinámicamente como `Bukea × [Nombre]`.
 - **Encabezado Gastronómico Obligatorio:**
   - Dice obligatoriamente **"Comida [TIPO]"** (e.g. *Comida Árabe, Comida Mexicana, Comida Italiana, Comida Fusión Insular*), nunca la palabra genérica "Restaurante".

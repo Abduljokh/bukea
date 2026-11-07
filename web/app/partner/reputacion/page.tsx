@@ -10,6 +10,11 @@ import {
   Send,
   CheckCircle2,
   AlertTriangle,
+  Bot,
+  Sparkles,
+  Sliders,
+  Settings,
+  X,
 } from 'lucide-react';
 import { usePartner } from '../PartnerContext';
 
@@ -60,10 +65,15 @@ const INITIAL_REVIEWS: VerifiedReview[] = [
 ];
 
 export default function PartnerReputacionPage() {
-  const { business } = usePartner();
+  const { business, toggleAiSetting, updateAiSettings } = usePartner();
   const [reviews, setReviews] = useState<VerifiedReview[]>(INITIAL_REVIEWS);
   const [replyingToId, setReplyingToId] = useState<string | null>(null);
   const [replyText, setReplyText] = useState('');
+  const [showSettingsModal, setShowSettingsModal] = useState(false);
+
+  const isReviewsAiEnabled = business.aiSettings?.reviewsAutoReply ?? true;
+  const currentTone = business.aiSettings?.reviewsTone ?? 'elegante';
+  const onlyPositive = business.aiSettings?.onlyPositiveReviewsAutoReply ?? true;
 
   const handleSendReply = (reviewId: string) => {
     if (!replyText.trim()) return;
@@ -74,9 +84,24 @@ export default function PartnerReputacionPage() {
     setReplyText('');
   };
 
+  const generateAiReply = (rev: VerifiedReview) => {
+    if (currentTone === 'elegante') {
+      return `Estimado/a ${rev.author}, es un verdadero honor haberte recibido en ${business.name}. Nos alegra enormemente que hayas disfrutado de nuestro(a) ${rev.dishOrdered} y de la atención de nuestro equipo. Esperamos recibirte nuevamente muy pronto en tu casa frente al mar.`;
+    } else if (currentTone === 'calido') {
+      return `¡Hola ${rev.author}! Muchísimas gracias por tus amables palabras y por elegirnos. ¡Nos alegra mucho que ${rev.dishOrdered} haya estado a la altura de tu visita! Te esperamos con los brazos abiertos en tu próxima salida.`;
+    } else {
+      return `¡Gracias por visitarnos ${rev.author}! Nos encanta saber que la pasaste genial y que disfrutaste ${rev.dishOrdered}. ¡Nos vemos pronto en ${business.name}!`;
+    }
+  };
+
+  const handleUseAiForReview = (rev: VerifiedReview) => {
+    setReplyingToId(rev.id);
+    setReplyText(generateAiReply(rev));
+  };
+
   return (
     <div className="space-y-6 animate-in fade-in-50 duration-200">
-      {/* HEADER REPUTACIÓN */}
+      {/* HEADER REPUTACIÓN & TOGGLE IA */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-neutral-200">
         <div>
           <div className="flex items-center gap-2">
@@ -90,6 +115,31 @@ export default function PartnerReputacionPage() {
           <p className="text-xs text-neutral-400 mt-0.5">
             Solo pueden calificar comensales reales que completaron su reserva o pagaron su cuenta a través de Bukea-Pay.
           </p>
+        </div>
+
+        {/* TOGGLE Y AJUSTE DE RESPUESTAS CON IA */}
+        <div className="flex items-center gap-2.5">
+          <button
+            type="button"
+            onClick={() => setShowSettingsModal(true)}
+            className="p-2 rounded-xl border border-neutral-200 bg-white hover:bg-neutral-50 text-neutral-600 transition-all"
+            title="Configurar tono y reglas de la IA"
+          >
+            <Sliders className="w-4 h-4" />
+          </button>
+
+          <button
+            type="button"
+            onClick={() => toggleAiSetting('reviewsAutoReply')}
+            className={`px-3.5 py-2 rounded-xl text-xs font-bold flex items-center gap-2 transition-all border ${
+              isReviewsAiEnabled
+                ? 'bg-neutral-900 hover:bg-black text-white border-neutral-900 shadow-xs'
+                : 'bg-neutral-100 hover:bg-neutral-200 text-neutral-700 border-neutral-300'
+            }`}
+          >
+            <Sparkles className={`w-3.5 h-3.5 ${isReviewsAiEnabled ? 'text-amber-300' : 'text-neutral-500'}`} />
+            <span>{isReviewsAiEnabled ? 'IA Reseñas: ON' : 'IA Reseñas: OFF'}</span>
+          </button>
         </div>
       </div>
 
@@ -180,17 +230,29 @@ export default function PartnerReputacionPage() {
                 </div>
               )}
 
-              {/* Formulario para responder */}
+              {/* Formulario para responder o generar con IA */}
               {!rev.reply && (
                 <div>
                   {replyingToId === rev.id ? (
                     <div className="mt-2 space-y-2">
+                      <div className="flex items-center justify-between text-[11px] text-neutral-500">
+                        <span>Respuesta Oficial:</span>
+                        <button
+                          type="button"
+                          onClick={() => setReplyText(generateAiReply(rev))}
+                          className="inline-flex items-center gap-1 text-neutral-900 hover:text-black font-semibold"
+                        >
+                          <Sparkles className="w-3 h-3 text-amber-500" />
+                          <span>Regenerar con IA ({currentTone})</span>
+                        </button>
+                      </div>
+
                       <textarea
-                        rows={2}
+                        rows={3}
                         placeholder="Escribe una respuesta cordial en nombre del establecimiento..."
                         value={replyText}
                         onChange={(e) => setReplyText(e.target.value)}
-                        className="w-full px-3 py-2 text-xs rounded-xl border border-neutral-200 focus:outline-none focus:border-neutral-900 bg-neutral-50/50"
+                        className="w-full px-3 py-2 text-xs rounded-xl border border-neutral-200 focus:outline-none focus:border-neutral-900 bg-neutral-50/50 leading-relaxed"
                       />
                       <div className="flex justify-end gap-2">
                         <button
@@ -210,13 +272,26 @@ export default function PartnerReputacionPage() {
                       </div>
                     </div>
                   ) : (
-                    <button
-                      onClick={() => setReplyingToId(rev.id)}
-                      className="text-xs font-semibold text-neutral-600 hover:text-neutral-900 flex items-center gap-1.5 pt-1"
-                    >
-                      <MessageSquare className="w-3.5 h-3.5" />
-                      <span>Responder al comensal</span>
-                    </button>
+                    <div className="flex items-center gap-2 pt-1">
+                      <button
+                        onClick={() => handleUseAiForReview(rev)}
+                        className="text-xs font-bold text-neutral-900 hover:text-black bg-neutral-100 hover:bg-neutral-200 px-3 py-1.5 rounded-xl flex items-center gap-1.5 transition-all shadow-2xs"
+                      >
+                        <Sparkles className="w-3.5 h-3.5 text-amber-500" />
+                        <span>Generar Respuesta con IA</span>
+                      </button>
+
+                      <button
+                        onClick={() => {
+                          setReplyingToId(rev.id);
+                          setReplyText('');
+                        }}
+                        className="text-xs font-semibold text-neutral-600 hover:text-neutral-900 flex items-center gap-1.5 px-2 py-1.5 rounded-xl hover:bg-neutral-50"
+                      >
+                        <MessageSquare className="w-3.5 h-3.5" />
+                        <span>Manual</span>
+                      </button>
+                    </div>
                   )}
                 </div>
               )}
@@ -224,6 +299,88 @@ export default function PartnerReputacionPage() {
           ))}
         </div>
       </div>
+
+      {/* MODAL CONFIGURACIÓN DE IA DE RESEÑAS */}
+      {showSettingsModal && (
+        <div className="fixed inset-0 z-50 bg-black/40 backdrop-blur-sm flex items-center justify-center p-4">
+          <div className="bg-white rounded-2xl max-w-sm w-full p-6 shadow-xl border border-neutral-200 animate-in zoom-in-95 duration-150">
+            <div className="flex items-center justify-between pb-3 border-b border-neutral-100">
+              <div className="flex items-center gap-2">
+                <Sparkles className="w-4 h-4 text-amber-500" />
+                <h3 className="text-base font-bold text-neutral-900">IA de Reseñas</h3>
+              </div>
+              <button
+                onClick={() => setShowSettingsModal(false)}
+                className="p-1 rounded-lg text-neutral-400 hover:text-neutral-700"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+
+            <div className="my-4 space-y-4">
+              <div>
+                <label className="text-xs font-semibold text-neutral-700 block mb-1">
+                  Tono de Comunicación de la IA:
+                </label>
+                <div className="grid grid-cols-3 gap-2">
+                  {[
+                    { id: 'elegante', label: 'Elegante' },
+                    { id: 'calido', label: 'Cálido' },
+                    { id: 'casual', label: 'Casual' },
+                  ].map((t) => (
+                    <button
+                      key={t.id}
+                      type="button"
+                      onClick={() => updateAiSettings({ reviewsTone: t.id as any })}
+                      className={`py-2 px-2 text-xs font-semibold rounded-xl border text-center transition-all ${
+                        currentTone === t.id
+                          ? 'border-neutral-900 bg-neutral-900 text-white shadow-xs'
+                          : 'border-neutral-200 bg-white text-neutral-700 hover:bg-neutral-50'
+                      }`}
+                    >
+                      {t.label}
+                    </button>
+                  ))}
+                </div>
+                <p className="text-[10px] text-neutral-400 mt-1.5">
+                  La IA adaptará el vocabulario y cortesía al responder a los comensales.
+                </p>
+              </div>
+
+              <div className="pt-3 border-t border-neutral-100">
+                <label className="flex items-start gap-2.5 cursor-pointer">
+                  <input
+                    type="checkbox"
+                    checked={onlyPositive}
+                    onChange={(e) =>
+                      updateAiSettings({ onlyPositiveReviewsAutoReply: e.target.checked })
+                    }
+                    className="mt-0.5 rounded border-neutral-300 text-neutral-900 focus:ring-neutral-900"
+                  />
+                  <div>
+                    <span className="text-xs font-bold text-neutral-900 block">
+                      Protección Anti-Crisis (4 y 5 estrellas)
+                    </span>
+                    <p className="text-[10px] text-neutral-500 leading-tight">
+                      Sólo auto-generar para comensales satisfechos. Las calificaciones de 1 a 3 estrellas requerirán redacción humana manual.
+                    </p>
+                  </div>
+                </label>
+              </div>
+            </div>
+
+            <div className="pt-3 border-t border-neutral-100 flex justify-end">
+              <button
+                type="button"
+                onClick={() => setShowSettingsModal(false)}
+                className="px-4 py-2 text-xs font-bold bg-neutral-900 text-white rounded-xl shadow-xs"
+              >
+                Guardar Configuración
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

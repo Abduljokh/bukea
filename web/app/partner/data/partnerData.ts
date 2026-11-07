@@ -92,6 +92,12 @@ export interface PartnerBusinessProfile {
   pausedUntil?: string;
   totalCapacity: number; // Para modo capacidad
   bukeaPointsDebtUSD: number; // Monto que Bukea le debe al restaurante por puntos canjeados
+  aiSettings: {
+    whatsappAutoReply: boolean;
+    reviewsAutoReply: boolean;
+    reviewsTone: 'elegante' | 'calido' | 'casual';
+    onlyPositiveReviewsAutoReply: boolean;
+  };
   tables: PartnerTable[];
   capacitySlots: CapacitySlot[];
   reservations: PartnerReservation[];
@@ -129,6 +135,12 @@ export const INITIAL_PARTNER_DATA: Record<string, PartnerBusinessProfile> = {
     isReservationsPaused: false,
     totalCapacity: 120,
     bukeaPointsDebtUSD: 340.00, // $340 USD en puntos que comensales usaron y Bukea le debe pagar
+    aiSettings: {
+      whatsappAutoReply: true,
+      reviewsAutoReply: true,
+      reviewsTone: 'elegante',
+      onlyPositiveReviewsAutoReply: true,
+    },
     tables: [
       { id: 't1', number: 'M-01', zone: 'Terraza Marina', capacity: 4, status: 'ocupada', currentGuest: { name: 'Carlos Mendoza', pax: 4, time: '13:30', tier: 'Prime', notes: 'Mesa con sombra' } },
       { id: 't2', number: 'M-02', zone: 'Terraza Marina', capacity: 2, status: 'reservada', currentGuest: { name: 'Elena Rivas', pax: 2, time: '14:00', tier: 'Foodie' } },
@@ -238,6 +250,12 @@ export const INITIAL_PARTNER_DATA: Record<string, PartnerBusinessProfile> = {
     isReservationsPaused: false,
     totalCapacity: 50,
     bukeaPointsDebtUSD: 120.00,
+    aiSettings: {
+      whatsappAutoReply: true,
+      reviewsAutoReply: false,
+      reviewsTone: 'calido',
+      onlyPositiveReviewsAutoReply: true,
+    },
     tables: [],
     capacitySlots: [
       { time: '07:00 AM - 08:30 AM', reserved: 38, capacity: 50, label: 'Turno Mañana Prime' },
