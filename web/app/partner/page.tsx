@@ -20,6 +20,10 @@ import {
   XCircle,
   HelpCircle,
   BellRing,
+  Plus,
+  Edit2,
+  Trash2,
+  Sliders,
 } from 'lucide-react';
 import { usePartner } from './PartnerContext';
 import { PartnerTable, TableStatus } from './data/partnerData';
@@ -28,6 +32,9 @@ export default function PartnerGestionPage() {
   const {
     business,
     updateTableStatus,
+    addTable,
+    updateTable,
+    deleteTable,
     updateReservationStatus,
     updateWaitlistStatus,
   } = usePartner();
@@ -36,6 +43,20 @@ export default function PartnerGestionPage() {
   const [selectedTable, setSelectedTable] = useState<PartnerTable | null>(null);
   const [reservationSearch, setReservationSearch] = useState('');
   const [activeTab, setActiveTab] = useState<'hoy' | 'waitlist' | 'historial'>('hoy');
+
+  // Estados del Gestor de Mesas (CRUD)
+  const [showAddTableModal, setShowAddTableModal] = useState(false);
+  const [showEditTableModal, setShowEditTableModal] = useState(false);
+  const [newTableNumber, setNewTableNumber] = useState('');
+  const [newTableZone, setNewTableZone] = useState('');
+  const [newTablePax, setNewTablePax] = useState(4);
+
+  // Formulario de edición de mesa
+  const [editTableForm, setEditTableForm] = useState({
+    number: '',
+    zone: '',
+    capacity: 4,
+  });
 
   // Cálculo de métricas
   const totalTables = business.tables.length;
@@ -213,22 +234,39 @@ export default function PartnerGestionPage() {
             </p>
           </div>
 
-          {/* Filtro de Zonas para Modo Mesas */}
+          {/* Filtro de Zonas para Modo Mesas y Botón Agregar Mesa */}
           {business.spaceType === 'mesas' && (
-            <div className="flex items-center gap-1.5 overflow-x-auto pb-1 sm:pb-0">
-              {zones.map((zone) => (
-                <button
-                  key={zone}
-                  onClick={() => setSelectedZone(zone)}
-                  className={`px-3 py-1.5 rounded-xl text-xs font-medium whitespace-nowrap transition-all ${
-                    selectedZone === zone
-                      ? 'bg-neutral-900 text-white font-semibold shadow-xs'
-                      : 'bg-neutral-100/70 text-neutral-600 hover:bg-neutral-200/60'
-                  }`}
-                >
-                  {zone}
-                </button>
-              ))}
+            <div className="flex items-center gap-2 overflow-x-auto pb-1 sm:pb-0">
+              <div className="flex items-center gap-1.5">
+                {zones.map((zone) => (
+                  <button
+                    key={zone}
+                    onClick={() => setSelectedZone(zone)}
+                    className={`px-3 py-1.5 rounded-xl text-xs font-medium whitespace-nowrap transition-all ${
+                      selectedZone === zone
+                        ? 'bg-neutral-900 text-white font-semibold shadow-xs'
+                        : 'bg-neutral-100/70 text-neutral-600 hover:bg-neutral-200/60'
+                    }`}
+                  >
+                    {zone}
+                  </button>
+                ))}
+              </div>
+
+              {/* Botón Agregar Nueva Mesa */}
+              <button
+                type="button"
+                onClick={() => {
+                  setNewTableNumber(`M-${(business.tables.length + 1).toString().padStart(2, '0')}`);
+                  setNewTableZone(zones[1] || 'Terraza Marina');
+                  setNewTablePax(4);
+                  setShowAddTableModal(true);
+                }}
+                className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-neutral-900 hover:bg-black text-white text-xs font-semibold whitespace-nowrap shadow-xs transition-all shrink-0"
+              >
+                <Plus className="w-3.5 h-3.5" />
+                <span>Agregar Mesa</span>
+              </button>
             </div>
           )}
         </div>
@@ -650,14 +688,257 @@ export default function PartnerGestionPage() {
               </div>
             </div>
 
-            <div className="mt-5 pt-3 border-t border-neutral-100 flex justify-end">
+            <div className="mt-5 pt-3 border-t border-neutral-100 flex items-center justify-between">
               <button
-                onClick={() => setSelectedTable(null)}
-                className="px-4 py-2 text-xs font-semibold text-neutral-600 hover:bg-neutral-100 rounded-xl"
+                type="button"
+                onClick={() => {
+                  if (confirm(`¿Estás seguro de eliminar la mesa ${selectedTable.number}?`)) {
+                    deleteTable(selectedTable.id);
+                    setSelectedTable(null);
+                  }
+                }}
+                className="inline-flex items-center gap-1 text-xs text-rose-600 hover:text-rose-800 font-semibold p-1"
+                title="Eliminar mesa permanentemente"
               >
-                Cerrar
+                <Trash2 className="w-3.5 h-3.5" />
+                <span>Eliminar</span>
+              </button>
+
+              <div className="flex items-center gap-2">
+                <button
+                  type="button"
+                  onClick={() => {
+                    setEditTableForm({
+                      number: selectedTable.number,
+                      zone: selectedTable.zone,
+                      capacity: selectedTable.capacity,
+                    });
+                    setShowEditTableModal(true);
+                  }}
+                  className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl border border-neutral-200 text-xs font-semibold text-neutral-800 hover:bg-neutral-50 transition-all"
+                >
+                  <Edit2 className="w-3 h-3 text-neutral-600" />
+                  <span>Editar</span>
+                </button>
+                <button
+                  onClick={() => setSelectedTable(null)}
+                  className="px-3.5 py-1.5 text-xs font-semibold text-neutral-600 hover:bg-neutral-100 rounded-xl"
+                >
+                  Cerrar
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* MODAL 1: AGREGAR NUEVA MESA */}
+      {showAddTableModal && (
+        <div className="fixed inset-0 z-50 bg-black/40 backdrop-blur-sm flex items-center justify-center p-4">
+          <div className="bg-white rounded-2xl max-w-sm w-full p-6 shadow-xl border border-neutral-200 animate-in zoom-in-95 duration-150">
+            <div className="flex items-center justify-between pb-3 border-b border-neutral-100">
+              <div>
+                <h3 className="text-base font-bold text-neutral-900">Agregar Nueva Mesa</h3>
+                <p className="text-xs text-neutral-400">Configura la ubicación y capacidad</p>
+              </div>
+              <button
+                onClick={() => setShowAddTableModal(false)}
+                className="p-1 rounded-lg text-neutral-400 hover:text-neutral-700"
+              >
+                <XCircle className="w-5 h-5" />
               </button>
             </div>
+
+            <form
+              onSubmit={(e) => {
+                e.preventDefault();
+                if (!newTableNumber.trim()) return;
+                addTable({
+                  number: newTableNumber.trim(),
+                  zone: newTableZone.trim() || 'Salón Principal',
+                  capacity: Number(newTablePax),
+                });
+                setShowAddTableModal(false);
+              }}
+              className="mt-4 space-y-4"
+            >
+              <div>
+                <label className="text-xs font-semibold text-neutral-700 block mb-1">
+                  Número / Identificador de Mesa *
+                </label>
+                <input
+                  type="text"
+                  required
+                  placeholder="Ej. M-05, BAL-04, VIP-C, BAR-04"
+                  value={newTableNumber}
+                  onChange={(e) => setNewTableNumber(e.target.value)}
+                  className="w-full px-3 py-2 text-xs rounded-xl border border-neutral-200 focus:outline-none focus:border-neutral-900"
+                />
+              </div>
+
+              <div>
+                <label className="text-xs font-semibold text-neutral-700 block mb-1">
+                  Zona / Sector del Salón *
+                </label>
+                <input
+                  type="text"
+                  required
+                  placeholder="Ej. Terraza Marina, Salón VIP, Camas Balinesas"
+                  value={newTableZone}
+                  onChange={(e) => setNewTableZone(e.target.value)}
+                  className="w-full px-3 py-2 text-xs rounded-xl border border-neutral-200 focus:outline-none focus:border-neutral-900"
+                />
+                <div className="flex flex-wrap gap-1 mt-1.5">
+                  {zones.filter((z) => z !== 'Todas').map((z) => (
+                    <button
+                      key={z}
+                      type="button"
+                      onClick={() => setNewTableZone(z)}
+                      className="text-[10px] text-neutral-600 bg-neutral-100 hover:bg-neutral-200 px-2 py-0.5 rounded"
+                    >
+                      {z}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              <div>
+                <label className="text-xs font-semibold text-neutral-700 block mb-1">
+                  Capacidad Máxima (Pax) *
+                </label>
+                <select
+                  value={newTablePax}
+                  onChange={(e) => setNewTablePax(Number(e.target.value))}
+                  className="w-full px-3 py-2 text-xs rounded-xl border border-neutral-200 focus:outline-none focus:border-neutral-900 bg-white"
+                >
+                  {[2, 3, 4, 5, 6, 8, 10, 12, 16, 20].map((n) => (
+                    <option key={n} value={n}>
+                      {n} personas (pax)
+                    </option>
+                  ))}
+                </select>
+              </div>
+
+              <div className="pt-2 flex items-center justify-end gap-2">
+                <button
+                  type="button"
+                  onClick={() => setShowAddTableModal(false)}
+                  className="px-3 py-1.5 text-xs font-semibold text-neutral-600 hover:bg-neutral-100 rounded-xl"
+                >
+                  Cancelar
+                </button>
+                <button
+                  type="submit"
+                  className="px-4 py-1.5 text-xs font-bold bg-neutral-900 hover:bg-black text-white rounded-xl shadow-xs"
+                >
+                  Crear Mesa
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {/* MODAL 2: EDITAR MESA EXISTENTE */}
+      {showEditTableModal && selectedTable && (
+        <div className="fixed inset-0 z-50 bg-black/40 backdrop-blur-sm flex items-center justify-center p-4">
+          <div className="bg-white rounded-2xl max-w-sm w-full p-6 shadow-xl border border-neutral-200 animate-in zoom-in-95 duration-150">
+            <div className="flex items-center justify-between pb-3 border-b border-neutral-100">
+              <div>
+                <h3 className="text-base font-bold text-neutral-900">Editar Mesa</h3>
+                <p className="text-xs text-neutral-400">Actualizar número, zona o capacidad</p>
+              </div>
+              <button
+                onClick={() => setShowEditTableModal(false)}
+                className="p-1 rounded-lg text-neutral-400 hover:text-neutral-700"
+              >
+                <XCircle className="w-5 h-5" />
+              </button>
+            </div>
+
+            <form
+              onSubmit={(e) => {
+                e.preventDefault();
+                updateTable(selectedTable.id, {
+                  number: editTableForm.number.trim(),
+                  zone: editTableForm.zone.trim(),
+                  capacity: Number(editTableForm.capacity),
+                });
+                setSelectedTable({
+                  ...selectedTable,
+                  number: editTableForm.number.trim(),
+                  zone: editTableForm.zone.trim(),
+                  capacity: Number(editTableForm.capacity),
+                });
+                setShowEditTableModal(false);
+              }}
+              className="mt-4 space-y-4"
+            >
+              <div>
+                <label className="text-xs font-semibold text-neutral-700 block mb-1">
+                  Número / Identificador de Mesa *
+                </label>
+                <input
+                  type="text"
+                  required
+                  value={editTableForm.number}
+                  onChange={(e) =>
+                    setEditTableForm({ ...editTableForm, number: e.target.value })
+                  }
+                  className="w-full px-3 py-2 text-xs rounded-xl border border-neutral-200 focus:outline-none focus:border-neutral-900"
+                />
+              </div>
+
+              <div>
+                <label className="text-xs font-semibold text-neutral-700 block mb-1">
+                  Zona / Sector *
+                </label>
+                <input
+                  type="text"
+                  required
+                  value={editTableForm.zone}
+                  onChange={(e) =>
+                    setEditTableForm({ ...editTableForm, zone: e.target.value })
+                  }
+                  className="w-full px-3 py-2 text-xs rounded-xl border border-neutral-200 focus:outline-none focus:border-neutral-900"
+                />
+              </div>
+
+              <div>
+                <label className="text-xs font-semibold text-neutral-700 block mb-1">
+                  Capacidad Máxima (Pax) *
+                </label>
+                <select
+                  value={editTableForm.capacity}
+                  onChange={(e) =>
+                    setEditTableForm({ ...editTableForm, capacity: Number(e.target.value) })
+                  }
+                  className="w-full px-3 py-2 text-xs rounded-xl border border-neutral-200 focus:outline-none focus:border-neutral-900 bg-white"
+                >
+                  {[2, 3, 4, 5, 6, 8, 10, 12, 16, 20].map((n) => (
+                    <option key={n} value={n}>
+                      {n} personas (pax)
+                    </option>
+                  ))}
+                </select>
+              </div>
+
+              <div className="pt-2 flex items-center justify-end gap-2">
+                <button
+                  type="button"
+                  onClick={() => setShowEditTableModal(false)}
+                  className="px-3 py-1.5 text-xs font-semibold text-neutral-600 hover:bg-neutral-100 rounded-xl"
+                >
+                  Cancelar
+                </button>
+                <button
+                  type="submit"
+                  className="px-4 py-1.5 text-xs font-bold bg-neutral-900 hover:bg-black text-white rounded-xl shadow-xs"
+                >
+                  Guardar Cambios
+                </button>
+              </div>
+            </form>
           </div>
         </div>
       )}

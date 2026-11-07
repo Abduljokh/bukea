@@ -63,6 +63,7 @@
 - **Módulos Implementados en Suite White Minimalist Liquid Glass:**
   1. **Gestión del Lugar (`/partner`):**
      - **Dualidad de Espacio:** Modo Mesas 2D para restaurantes/beach clubs/bares/discotecas con estados (Libre, Reservada, Ocupada, Cuenta Pedida, Bloqueada) vs. Modo Capacidad/Aforo para Gyms/Hoteles/Spas con slots horarios y cupos.
+     - **Gestor de Mesas (CRUD Salón):** Botón directo para agregar nueva mesa (`+ Agregar Mesa`), modal para editar número, zona y capacidad, y botón para eliminar mesas con confirmación.
      - **Kill-Switch de Reservas:** Pausar o reanudar reservas online en 1 clic (1 hora, Por hoy, Indefinido).
      - **Reserva Manual (Walk-in):** Registro rápido de comensales presenciales o telefónicos con asignación de mesa.
      - **Waitlist Inteligente:** Cola de espera con cronómetro y botón directo de notificación vía WhatsApp.

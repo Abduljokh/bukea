@@ -17,6 +17,10 @@ interface PartnerContextType {
   toggleReservationsPause: (paused?: boolean, until?: string) => void;
   addManualReservation: (res: Omit<PartnerReservation, 'id' | 'paidViaBukeaPay'>) => void;
   updateTableStatus: (tableId: string, status: PartnerTable['status']) => void;
+  // Tables CRUD
+  addTable: (table: { number: string; zone: string; capacity: number }) => void;
+  updateTable: (tableId: string, partial: Partial<PartnerTable>) => void;
+  deleteTable: (tableId: string) => void;
   updateBusinessProfile: (partial: Partial<PartnerBusinessProfile>) => void;
   // Menu CRUD
   addDish: (dish: Omit<PartnerDish, 'id'>) => void;
@@ -124,6 +128,34 @@ export function PartnerProvider({ children }: { children: React.ReactNode }) {
     }));
   };
 
+  const addTable = (table: { number: string; zone: string; capacity: number }) => {
+    const newTable: PartnerTable = {
+      id: `tbl-${Date.now()}`,
+      number: table.number,
+      zone: table.zone,
+      capacity: table.capacity,
+      status: 'libre',
+    };
+    updateActiveBusiness((b) => ({
+      ...b,
+      tables: [...b.tables, newTable],
+    }));
+  };
+
+  const updateTable = (tableId: string, partial: Partial<PartnerTable>) => {
+    updateActiveBusiness((b) => ({
+      ...b,
+      tables: b.tables.map((t) => (t.id === tableId ? { ...t, ...partial } : t)),
+    }));
+  };
+
+  const deleteTable = (tableId: string) => {
+    updateActiveBusiness((b) => ({
+      ...b,
+      tables: b.tables.filter((t) => t.id !== tableId),
+    }));
+  };
+
   const updateBusinessProfile = (partial: Partial<PartnerBusinessProfile>) => {
     updateActiveBusiness((b) => ({
       ...b,
@@ -217,6 +249,9 @@ export function PartnerProvider({ children }: { children: React.ReactNode }) {
         toggleReservationsPause,
         addManualReservation,
         updateTableStatus,
+        addTable,
+        updateTable,
+        deleteTable,
         updateBusinessProfile,
         addDish,
         updateDish,

@@ -20,14 +20,18 @@ import {
   X,
   Eye,
   CheckCircle2,
+  Layers,
 } from 'lucide-react';
 import { usePartner } from '../PartnerContext';
-import { PartnerDish } from '../data/partnerData';
+import { PartnerDish, PartnerTable } from '../data/partnerData';
 
 export default function PartnerPreferenciasPage() {
   const {
     business,
     updateBusinessProfile,
+    addTable,
+    updateTable,
+    deleteTable,
     addDish,
     updateDish,
     deleteDish,
@@ -35,7 +39,7 @@ export default function PartnerPreferenciasPage() {
     toggleDishAvailability,
   } = usePartner();
 
-  const [activeTab, setActiveTab] = useState<'info' | 'horarios' | 'menu'>('info');
+  const [activeTab, setActiveTab] = useState<'info' | 'horarios' | 'menu' | 'mesas'>('info');
 
   // Estado del formulario de Información General
   const [formData, setFormData] = useState({
@@ -63,6 +67,54 @@ export default function PartnerPreferenciasPage() {
   const [selectedCategory, setSelectedCategory] = useState<string>('Todas');
   const [isDishModalOpen, setIsDishModalOpen] = useState(false);
   const [editingDish, setEditingDish] = useState<PartnerDish | null>(null);
+
+  // Estados del Gestor de Mesas
+  const [isTableModalOpen, setIsTableModalOpen] = useState(false);
+  const [editingTable, setEditingTable] = useState<PartnerTable | null>(null);
+  const [tableModalForm, setTableModalForm] = useState({
+    number: '',
+    zone: 'Terraza Marina',
+    capacity: 4,
+  });
+
+  const openTableModal = (tbl?: PartnerTable) => {
+    if (tbl) {
+      setEditingTable(tbl);
+      setTableModalForm({
+        number: tbl.number,
+        zone: tbl.zone,
+        capacity: tbl.capacity,
+      });
+    } else {
+      setEditingTable(null);
+      setTableModalForm({
+        number: `M-${(business.tables.length + 1).toString().padStart(2, '0')}`,
+        zone: business.tables[0]?.zone || 'Terraza Marina',
+        capacity: 4,
+      });
+    }
+    setIsTableModalOpen(true);
+  };
+
+  const handleSaveTable = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!tableModalForm.number.trim()) return;
+
+    if (editingTable) {
+      updateTable(editingTable.id, {
+        number: tableModalForm.number.trim(),
+        zone: tableModalForm.zone.trim(),
+        capacity: Number(tableModalForm.capacity),
+      });
+    } else {
+      addTable({
+        number: tableModalForm.number.trim(),
+        zone: tableModalForm.zone.trim(),
+        capacity: Number(tableModalForm.capacity),
+      });
+    }
+    setIsTableModalOpen(false);
+  };
 
   // Formulario de Plato
   const [dishForm, setDishForm] = useState({
@@ -191,9 +243,12 @@ export default function PartnerPreferenciasPage() {
       </div>
 
       {/* PESTAÑAS DE NAVEGACIÓN */}
-      <div className="flex items-center gap-2 border-b border-neutral-200 pb-2">
+      <div className="flex items-center gap-2 border-b border-neutral-200 pb-2 overflow-x-auto">
         {[
           { id: 'info', label: 'Información & Marca', icon: Building },
+          ...(business.spaceType === 'mesas'
+            ? [{ id: 'mesas', label: 'Gestor de Mesas & Zonas', icon: Layers }]
+            : []),
           { id: 'horarios', label: 'Horarios & Capacidad', icon: Clock },
           { id: 'menu', label: 'Gestor de Menú / Carta', icon: UtensilsCrossed },
         ].map((tab) => {
@@ -203,7 +258,7 @@ export default function PartnerPreferenciasPage() {
             <button
               key={tab.id}
               onClick={() => setActiveTab(tab.id as any)}
-              className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-semibold transition-all ${
+              className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-semibold whitespace-nowrap transition-all ${
                 isActive
                   ? 'bg-neutral-900 text-white shadow-xs'
                   : 'text-neutral-600 hover:bg-neutral-100'
@@ -467,6 +522,126 @@ export default function PartnerPreferenciasPage() {
             </button>
           </div>
         </form>
+      )}
+
+      {/* =========================================================================
+          PESTAÑA GESTOR DE MESAS & ZONAS (CRUD COMPLETO)
+          ========================================================================= */}
+      {activeTab === 'mesas' && (
+        <div className="space-y-6">
+          <div className="bg-white rounded-2xl border border-neutral-200/80 p-6 shadow-xs space-y-5">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-neutral-100">
+              <div>
+                <h3 className="text-base font-bold text-neutral-900">
+                  Gestor de Mesas & Zonas Físicas ({business.tables.length} mesas configuradas)
+                </h3>
+                <p className="text-xs text-neutral-400 mt-0.5">
+                  Agrega, edita capacidades o elimina mesas de tu establecimiento. Los cambios se sincronizan en tiempo real con el Floor Plan.
+                </p>
+              </div>
+
+              <button
+                type="button"
+                onClick={() => openTableModal()}
+                className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-neutral-950 hover:bg-black text-white text-xs font-bold shadow-xs transition-all shrink-0"
+              >
+                <Plus className="w-4 h-4" />
+                <span>Agregar Nueva Mesa</span>
+              </button>
+            </div>
+
+            {/* Estadísticas de Mesas */}
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+              <div className="p-3.5 rounded-xl bg-neutral-50 border border-neutral-200/70 text-xs">
+                <span className="text-neutral-400 block text-[10px] uppercase font-bold">Mesas Totales</span>
+                <span className="text-lg font-bold text-neutral-900">{business.tables.length} mesas</span>
+              </div>
+              <div className="p-3.5 rounded-xl bg-neutral-50 border border-neutral-200/70 text-xs">
+                <span className="text-neutral-400 block text-[10px] uppercase font-bold">Capacidad Sumada</span>
+                <span className="text-lg font-bold text-neutral-900">
+                  {business.tables.reduce((acc, t) => acc + t.capacity, 0)} comensales
+                </span>
+              </div>
+              <div className="p-3.5 rounded-xl bg-neutral-50 border border-neutral-200/70 text-xs">
+                <span className="text-neutral-400 block text-[10px] uppercase font-bold">Zonas Únicas</span>
+                <span className="text-lg font-bold text-neutral-900">
+                  {Array.from(new Set(business.tables.map((t) => t.zone))).length} áreas
+                </span>
+              </div>
+              <div className="p-3.5 rounded-xl bg-neutral-50 border border-neutral-200/70 text-xs">
+                <span className="text-neutral-400 block text-[10px] uppercase font-bold">Mesas Libres</span>
+                <span className="text-lg font-bold text-emerald-700">
+                  {business.tables.filter((t) => t.status === 'libre').length} disponibles
+                </span>
+              </div>
+            </div>
+
+            {/* Tabla de Gestión */}
+            <div className="overflow-x-auto pt-2">
+              <table className="w-full text-left text-xs">
+                <thead>
+                  <tr className="border-b border-neutral-100 text-neutral-400 uppercase text-[10px] tracking-wider">
+                    <th className="py-2.5 px-3">Mesa / Número</th>
+                    <th className="py-2.5 px-3">Zona / Ubicación</th>
+                    <th className="py-2.5 px-3">Capacidad</th>
+                    <th className="py-2.5 px-3">Estado Actual</th>
+                    <th className="py-2.5 px-3 text-right">Acciones</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-neutral-100">
+                  {business.tables.map((tbl) => (
+                    <tr key={tbl.id} className="hover:bg-neutral-50/70">
+                      <td className="py-3 px-3 font-bold text-neutral-900">{tbl.number}</td>
+                      <td className="py-3 px-3 text-neutral-700 font-medium">{tbl.zone}</td>
+                      <td className="py-3 px-3 font-semibold text-neutral-900">
+                        {tbl.capacity} personas (pax)
+                      </td>
+                      <td className="py-3 px-3">
+                        <span
+                          className={`text-[10px] font-bold px-2 py-0.5 rounded capitalize ${
+                            tbl.status === 'libre'
+                              ? 'bg-emerald-100 text-emerald-800'
+                              : tbl.status === 'ocupada'
+                              ? 'bg-neutral-900 text-white'
+                              : tbl.status === 'reservada'
+                              ? 'bg-amber-100 text-amber-800'
+                              : 'bg-neutral-200 text-neutral-700'
+                          }`}
+                        >
+                          {tbl.status}
+                        </span>
+                      </td>
+                      <td className="py-3 px-3 text-right">
+                        <div className="flex items-center justify-end gap-1.5">
+                          <button
+                            type="button"
+                            onClick={() => openTableModal(tbl)}
+                            className="p-1.5 rounded-lg border border-neutral-200 text-neutral-700 hover:bg-neutral-100"
+                            title="Editar mesa"
+                          >
+                            <Edit2 className="w-3.5 h-3.5" />
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => {
+                              if (confirm(`¿Estás seguro de eliminar la mesa ${tbl.number}?`)) {
+                                deleteTable(tbl.id);
+                              }
+                            }}
+                            className="p-1.5 rounded-lg border border-neutral-200 text-rose-600 hover:bg-rose-50"
+                            title="Eliminar mesa"
+                          >
+                            <Trash2 className="w-3.5 h-3.5" />
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
       )}
 
       {/* =========================================================================
@@ -927,6 +1102,101 @@ export default function PartnerPreferenciasPage() {
                   className="px-5 py-2 text-xs font-bold bg-neutral-950 hover:bg-black text-white rounded-xl shadow-xs"
                 >
                   {editingDish ? 'Guardar Cambios' : 'Publicar en Menú'}
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {/* =========================================================================
+          MODAL DE CREACIÓN / EDICIÓN DE MESA EN PREFERENCIAS
+          ========================================================================= */}
+      {isTableModalOpen && (
+        <div className="fixed inset-0 z-50 bg-black/40 backdrop-blur-sm flex items-center justify-center p-4">
+          <div className="bg-white rounded-2xl max-w-sm w-full p-6 shadow-xl border border-neutral-200 animate-in zoom-in-95 duration-150">
+            <div className="flex items-center justify-between pb-3 border-b border-neutral-100">
+              <div>
+                <h3 className="text-base font-bold text-neutral-900">
+                  {editingTable ? 'Editar Mesa' : 'Agregar Nueva Mesa'}
+                </h3>
+                <p className="text-xs text-neutral-400">
+                  Configura el número, zona y capacidad de personas
+                </p>
+              </div>
+              <button
+                onClick={() => setIsTableModalOpen(false)}
+                className="p-1 rounded-lg text-neutral-400 hover:text-neutral-700"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+
+            <form onSubmit={handleSaveTable} className="mt-4 space-y-4">
+              <div>
+                <label className="text-xs font-semibold text-neutral-700 block mb-1">
+                  Número / Identificador de Mesa *
+                </label>
+                <input
+                  type="text"
+                  required
+                  placeholder="Ej. M-06, BAL-03, VIP-B"
+                  value={tableModalForm.number}
+                  onChange={(e) =>
+                    setTableModalForm({ ...tableModalForm, number: e.target.value })
+                  }
+                  className="w-full px-3.5 py-2 rounded-xl border border-neutral-200 text-xs focus:outline-none focus:border-neutral-900 bg-neutral-50/50"
+                />
+              </div>
+
+              <div>
+                <label className="text-xs font-semibold text-neutral-700 block mb-1">
+                  Zona / Sector del Salón *
+                </label>
+                <input
+                  type="text"
+                  required
+                  placeholder="Ej. Terraza Marina, Salón VIP"
+                  value={tableModalForm.zone}
+                  onChange={(e) =>
+                    setTableModalForm({ ...tableModalForm, zone: e.target.value })
+                  }
+                  className="w-full px-3.5 py-2 rounded-xl border border-neutral-200 text-xs focus:outline-none focus:border-neutral-900 bg-neutral-50/50"
+                />
+              </div>
+
+              <div>
+                <label className="text-xs font-semibold text-neutral-700 block mb-1">
+                  Capacidad de Comensales (Pax) *
+                </label>
+                <select
+                  value={tableModalForm.capacity}
+                  onChange={(e) =>
+                    setTableModalForm({ ...tableModalForm, capacity: Number(e.target.value) })
+                  }
+                  className="w-full px-3.5 py-2 rounded-xl border border-neutral-200 text-xs focus:outline-none focus:border-neutral-900 bg-white"
+                >
+                  {[2, 3, 4, 5, 6, 8, 10, 12, 16, 20].map((n) => (
+                    <option key={n} value={n}>
+                      {n} personas (pax)
+                    </option>
+                  ))}
+                </select>
+              </div>
+
+              <div className="pt-3 border-t border-neutral-100 flex items-center justify-end gap-2.5">
+                <button
+                  type="button"
+                  onClick={() => setIsTableModalOpen(false)}
+                  className="px-4 py-2 text-xs font-semibold text-neutral-600 hover:bg-neutral-100 rounded-xl"
+                >
+                  Cancelar
+                </button>
+                <button
+                  type="submit"
+                  className="px-5 py-2 text-xs font-bold bg-neutral-950 hover:bg-black text-white rounded-xl shadow-xs"
+                >
+                  {editingTable ? 'Guardar Cambios' : 'Crear Mesa'}
                 </button>
               </div>
             </form>
