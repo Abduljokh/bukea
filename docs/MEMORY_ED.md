@@ -137,6 +137,8 @@ URL red Wi-Fi / Router (móviles): **http://192.168.1.2:3000**
 - `18b5577`: Documentación del Checkout Stepper colapsable y Escudo Anti-Spam en memoria técnica.
 - `3101820`: Configuración del servidor en puerto 3000 con escucha en todas las interfaces (`0.0.0.0`) e IP local `192.168.1.2` para pruebas en móviles.
 - `26a7fe4`: Corrección de padding/overlap en inputs y selects, adición de Binance Pay y Stripe, separación de Identidad en dos campos (con opción Pasaporte condicional a Binance/Stripe) y actualización de política no reembolsable (crédito en mesa o Puntos Bukea $1 = 1 pto).
+- `efe169b`: Erradicación total de emojis por Lucide icons, Scrollspy dinámico en carta/menú con dock de categorías sticky no cortado y renombre de pasos del Accordion Stepper (Información, Verificación y Pago).
+
 
 
 
