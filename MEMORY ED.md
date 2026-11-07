@@ -73,6 +73,19 @@
   - Modal con visor 3D interactivo `<model-viewer>` para girar en 360° o proyectar en la mesa física con WebXR.
 - **Motor de Reservas Instantáneo:**
   - Selector de comensales (1 a 8+ personas).
+
+### C. Modelo de Negocio, Niveles de Usuario y MVT Prime
+1. **Regla de Oro Financiera (Cero Riesgo para Bookealo):**
+   - **Descuentos en Comida (10% a 30% / 2x1):** Financiados 100% por los restaurantes aliados para llenar mesas en días y horas valle (lunes a jueves, Yield Management). Bukea nunca subsidia alimentos ni bebidas.
+   - **Cashback (3%):** Financiado estrictamente de la comisión del 5% de la pasarela Bukea-Pay (2% procesamiento bancario + 3% pool devuelto al usuario en Puntos Bukea).
+   - **MVT Prime ($4/mes):** 100% margen neto recurrente (MRR) para Bukea.
+2. **Jerarquía de Niveles:**
+   - **🥉 Nivel 1 — Explorador ($0 gasto):** Todo nuevo usuario. 3% Cashback Bukea-Pay, depósito anti-spam de $1 (o 1 pto), carta regular.
+   - **🥈 Nivel 2 — Foodie ($80 consumidos en 60 días):** $0 depósitos de reserva, 10% a 15% OFF en días valle (Lun a Jue), 3% Cashback.
+   - **👑 MVT Prime ($4 USD/mes):** Fast-Track directo al **Nivel 2 (Foodie)** sin esperar los $80 de consumo ($0 depósitos + 10% a 15% OFF valle).
+   - **🥇 Nivel 3 — VIP Gourmet ($200 consumidos en 60 días):** **Exclusivamente por consumo real acumulado**. No se puede comprar con ninguna membresía. $0 depósitos, 20% a 30% OFF en días valle, 2x1 en aliados y cortesía de bienvenida.
+3. **Candado de Pasarela:** Descuentos y cashback solo válidos si la cuenta se paga en mesa vía Bukea-Pay (QR / NFC).
+
   - Selector de fecha con validación de días pasados.
   - Franjas horarias con disponibilidad en tiempo real.
   - Formulario de nombre y WhatsApp.
