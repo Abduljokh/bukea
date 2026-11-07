@@ -58,6 +58,33 @@
 ### B. Detalle del Restaurante (`web/app/lugar/[id]/page.tsx`)
 - **Co-Branding Oficial ("Bukea x [Restaurante]"):**
   - En las páginas de los locales, tanto la barra superior (Topbar) como el título de la tarjeta principal deben mostrar obligatoriamente el logo de **Bukea** (con tipografía oficial Story Script) + signo de colaboración **×** + el **nombre del restaurante** (ejemplo: *Bukea x Sakay*, *Bukea x Downtown Beach Club*).
+
+### C. Portal Bukea Partner / Negocios Aliados (`web/app/partner`)
+- **Módulos Implementados en Suite White Minimalist Liquid Glass:**
+  1. **Gestión del Lugar (`/partner`):**
+     - **Dualidad de Espacio:** Modo Mesas 2D para restaurantes/beach clubs/bares/discotecas con estados (Libre, Reservada, Ocupada, Cuenta Pedida, Bloqueada) vs. Modo Capacidad/Aforo para Gyms/Hoteles/Spas con slots horarios y cupos.
+     - **Kill-Switch de Reservas:** Pausar o reanudar reservas online en 1 clic (1 hora, Por hoy, Indefinido).
+     - **Reserva Manual (Walk-in):** Registro rápido de comensales presenciales o telefónicos con asignación de mesa.
+     - **Waitlist Inteligente:** Cola de espera con cronómetro y botón directo de notificación vía WhatsApp.
+     - **Timeline y Próximas Reservas:** Gestión de llegadas con botón para sentar comensal en mesa.
+  2. **Admin & Preferencias (`/partner/preferencias`):**
+     - Información general y descripción, cocina/especialidad (`Comida [TIPO]`), dirección, WhatsApp y teléfono.
+     - Gestor multimedia: subida y actualización de Logo oficial, portada panorámica y galería fotográfica.
+     - Horarios semanales, tiempo de tolerancia de reserva y capacidad total.
+     - **Gestor de Menú Digital Completo (CRUD):** Add (crear plato/servicio), Edit (precios en USD y Bs BCV), Move/Reorder (subir/bajar posición) y Delete con confirmación, más toggle instantáneo de disponible / agotado hoy.
+  3. **POS All-in-One & Cocina KDS (`/partner/pos`):**
+     - Inspirado en Kamra: Pantalla de Cocina (KDS) Kanban con SLA de preparación, comandero digital y tickets térmicos escaneables con QR para Bukea-Pay.
+  4. **Finanzas & Bukea-Pay (`/partner/finanzas`):**
+     - Conciliación de Puntos Bukea adeudados por la plataforma ($1 USD = 1 pto) con liquidación bancaria directa.
+     - Orquestador de enlaces de cobro Bukea-Pay para WhatsApp, ventas en vivo y herramienta Split Bill (dividir cuenta en mesa).
+  5. **CRM & Fidelización (`/partner/crm`):**
+     - Scoring predictivo de No-Show (0% a 100%), análisis de LTV, detección de comensales Prime/VIP y alertas de cortesía de bienvenida.
+  6. **WhatsApp Chatbot (`/partner/whatsapp`):**
+     - Bandeja de mensajes integrada con bot AI y conmutador a operador humano.
+  7. **Cupones & Yield Management (`/partner/cupones`):**
+     - Descuentos valle (15% a 30% / 2x1) autofinanciados por el negocio con candado de pago por Bukea-Pay.
+  8. **Reseñas & Reputación (`/partner/reputacion`):**
+     - Escudo de reseñas verificadas exclusivas de comensales que pagaron o asistieron.
   - El título de la pestaña del navegador también se actualiza dinámicamente como `Bukea × [Nombre]`.
 - **Encabezado Gastronómico Obligatorio:**
   - Dice obligatoriamente **"Comida [TIPO]"** (e.g. *Comida Árabe, Comida Mexicana, Comida Italiana, Comida Fusión Insular*), nunca la palabra genérica "Restaurante".
