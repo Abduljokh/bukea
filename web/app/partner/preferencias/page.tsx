@@ -52,6 +52,8 @@ export default function PartnerPreferenciasPage() {
     heroImage: business.heroImage,
     toleranceMinutes: business.toleranceMinutes,
     totalCapacity: business.totalCapacity,
+    pacingMaxGuestsPer15Min: business.pacingMaxGuestsPer15Min || 12,
+    tableTurnaroundMinutes: business.tableTurnaroundMinutes || 90,
   });
 
   const [savedSuccess, setSavedSuccess] = useState(false);
@@ -530,6 +532,93 @@ export default function PartnerPreferenciasPage() {
                   />
                   <span className="text-xs text-neutral-500">personas de aforo máximo</span>
                 </div>
+              </div>
+            </div>
+
+            {/* SECCIÓN DE PACING DE SALÓN & COCINA (INSPIRADA EN OPENRESTO) */}
+            <div className="pt-6 border-t border-neutral-100 space-y-4">
+              <div className="flex items-center justify-between">
+                <div>
+                  <div className="flex items-center gap-2">
+                    <h4 className="text-xs font-bold uppercase tracking-wider text-neutral-900">
+                      Control de Pacing & Ritmo de Cocina
+                    </h4>
+                    <span className="text-[10px] font-bold text-neutral-700 bg-neutral-100 px-2 py-0.5 rounded border border-neutral-200">
+                      OpenResto Flow Engine
+                    </span>
+                  </div>
+                  <p className="text-[11px] text-neutral-400 mt-0.5">
+                    Evita que la cocina colapse regulando el número máximo de comensales que pueden reservar en un mismo intervalo.
+                  </p>
+                </div>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="p-4 rounded-xl bg-neutral-50 border border-neutral-200/80 space-y-2">
+                  <label className="text-xs font-bold text-neutral-800 block">
+                    Pacing Máximo (Pax / 15 minutos)
+                  </label>
+                  <div className="flex items-center gap-2">
+                    <input
+                      type="number"
+                      min="2"
+                      max="50"
+                      value={formData.pacingMaxGuestsPer15Min}
+                      onChange={(e) =>
+                        setFormData({
+                          ...formData,
+                          pacingMaxGuestsPer15Min: Number(e.target.value),
+                        })
+                      }
+                      className="w-28 px-3 py-2 rounded-xl border border-neutral-200 text-xs font-bold bg-white"
+                    />
+                    <span className="text-xs text-neutral-500">
+                      comensales máx. que pueden llegar cada 15 min
+                    </span>
+                  </div>
+                  <p className="text-[10px] text-neutral-400">
+                    Si se alcanza este tope, Bukea oculta automáticamente ese horario y sugiere la siguiente franja abierta.
+                  </p>
+                </div>
+
+                <div className="p-4 rounded-xl bg-neutral-50 border border-neutral-200/80 space-y-2">
+                  <label className="text-xs font-bold text-neutral-800 block">
+                    Rotación Estimada por Mesa (Turnaround)
+                  </label>
+                  <div className="flex items-center gap-2">
+                    <input
+                      type="number"
+                      min="30"
+                      max="240"
+                      step="15"
+                      value={formData.tableTurnaroundMinutes}
+                      onChange={(e) =>
+                        setFormData({
+                          ...formData,
+                          tableTurnaroundMinutes: Number(e.target.value),
+                        })
+                      }
+                      className="w-28 px-3 py-2 rounded-xl border border-neutral-200 text-xs font-bold bg-white"
+                    />
+                    <span className="text-xs text-neutral-500">
+                      minutos promedio por servicio de mesa
+                    </span>
+                  </div>
+                  <p className="text-[10px] text-neutral-400">
+                    Calcula con precisión cuándo una mesa volverá a quedar libre para el siguiente turno.
+                  </p>
+                </div>
+              </div>
+
+              <div className="flex justify-end pt-2">
+                <button
+                  type="button"
+                  onClick={handleSaveProfile}
+                  className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-neutral-900 hover:bg-black text-white text-xs font-semibold shadow-xs"
+                >
+                  <Save className="w-3.5 h-3.5" />
+                  <span>Guardar Parámetros de Pacing</span>
+                </button>
               </div>
             </div>
           </div>

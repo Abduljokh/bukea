@@ -86,6 +86,8 @@ export interface PartnerBusinessProfile {
     hours: string;
   }[];
   toleranceMinutes: number;
+  pacingMaxGuestsPer15Min: number; // Límite de comensales cada 15 min (Pacing inspirado en OpenResto)
+  tableTurnaroundMinutes: number; // Tiempo promedio de rotación de mesa (ej. 90 min)
   isReservationsPaused: boolean;
   pausedUntil?: string;
   totalCapacity: number; // Para modo capacidad
@@ -122,6 +124,8 @@ export const INITIAL_PARTNER_DATA: Record<string, PartnerBusinessProfile> = {
       { days: 'Lunes y Martes', hours: 'Cerrado (Mantenimiento)' },
     ],
     toleranceMinutes: 15,
+    pacingMaxGuestsPer15Min: 12,
+    tableTurnaroundMinutes: 90,
     isReservationsPaused: false,
     totalCapacity: 120,
     bukeaPointsDebtUSD: 340.00, // $340 USD en puntos que comensales usaron y Bukea le debe pagar
@@ -229,6 +233,8 @@ export const INITIAL_PARTNER_DATA: Record<string, PartnerBusinessProfile> = {
       { days: 'Sábados y Domingos', hours: '08:00 AM - 06:00 PM' },
     ],
     toleranceMinutes: 10,
+    pacingMaxGuestsPer15Min: 20,
+    tableTurnaroundMinutes: 60,
     isReservationsPaused: false,
     totalCapacity: 50,
     bukeaPointsDebtUSD: 120.00,

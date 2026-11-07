@@ -19,8 +19,13 @@ import {
   BookOpen,
   CalendarCheck,
   ChevronDown,
-  ChevronUp
+  ChevronUp,
+  CalendarPlus,
+  Download,
+  Smartphone,
+  ShieldCheck
 } from 'lucide-react';
+import { generateGoogleCalendarUrl, downloadIcsFile } from '@/app/utils/calendarExport';
 import { 
   Business, 
   BUSINESSES_MOCK, 
@@ -338,20 +343,83 @@ export default function LugarPage() {
         {/* MOTOR DE RESERVA / CONFIRMACIÓN */}
         <section id="reserva-section" className="mb-5">
           {code ? (
-            <div className="liquid-glass-card p-6 text-black text-center bg-white border-black/20">
-              <div className="w-12 h-12 rounded-full bg-neutral-100 border border-black/10 flex items-center justify-center mx-auto mb-3 text-black">
+            <div className="liquid-glass-card p-6 text-black text-center bg-white border-black/20 animate-in zoom-in-95 duration-150">
+              <div className="w-12 h-12 rounded-full bg-emerald-50 border border-emerald-200 flex items-center justify-center mx-auto mb-3 text-emerald-700">
                 <CheckCircle2 size={26} />
               </div>
-              <div className="text-[11px] font-semibold text-neutral-500 uppercase tracking-widest">
-                Reserva Confirmada
+              <div className="text-[11px] font-bold text-neutral-400 uppercase tracking-widest">
+                Reserva Garantizada · Escudo Anti-Spam Activo
               </div>
               <div className="text-3xl font-extrabold font-mono text-black tracking-widest my-2">
                 {code}
               </div>
-              <p className="text-xs text-neutral-600 max-w-sm mx-auto mb-5 leading-relaxed">
+              <p className="text-xs text-neutral-600 max-w-sm mx-auto mb-4 leading-relaxed">
                 Presenta este código al llegar a <span className="text-black font-semibold">{b.name}</span>.<br />
                 {fmtDate(date)} a las {sel && fmtTime(sel.start)} · {size} personas.
               </p>
+
+              {/* INTEGRACIÓN OPENRESTO: AGENDAR EN CALENDARIO Y APPLE/GOOGLE WALLET */}
+              <div className="p-3.5 rounded-2xl bg-neutral-50 border border-black/8 text-left mb-5 space-y-2.5">
+                <div className="flex items-center justify-between">
+                  <span className="text-[11px] font-bold uppercase tracking-wider text-neutral-500">
+                    Sincronización Inmediata
+                  </span>
+                  <span className="text-[10px] text-emerald-700 bg-emerald-100 font-bold px-2 py-0.5 rounded">
+                    Recordatorio Activo
+                  </span>
+                </div>
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 pt-1">
+                  {/* Google Calendar */}
+                  <a
+                    href={generateGoogleCalendarUrl({
+                      title: `Reserva en ${b.name} (Bukea)`,
+                      description: `Reserva confirmada vía Bukea para ${size} personas.\nDirección: ${b.address}`,
+                      location: `${b.name}, ${b.address}`,
+                      startDate: date,
+                      startTime: sel ? sel.start : '20:00',
+                      bookingCode: code,
+                      pax: size,
+                    })}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex items-center justify-center gap-1.5 px-3 py-2 rounded-xl bg-white border border-neutral-200 text-xs font-semibold text-neutral-800 hover:bg-neutral-100 transition-all shadow-2xs"
+                  >
+                    <CalendarPlus size={14} className="text-neutral-600" />
+                    <span>Google Calendar</span>
+                  </a>
+
+                  {/* Descargar .ics para Apple Calendar */}
+                  <button
+                    type="button"
+                    onClick={() =>
+                      downloadIcsFile({
+                        title: `Reserva en ${b.name} (Bukea)`,
+                        description: `Reserva confirmada vía Bukea para ${size} personas.\nDirección: ${b.address}`,
+                        location: `${b.name}, ${b.address}`,
+                        startDate: date,
+                        startTime: sel ? sel.start : '20:00',
+                        bookingCode: code,
+                        pax: size,
+                      })
+                    }
+                    className="flex items-center justify-center gap-1.5 px-3 py-2 rounded-xl bg-white border border-neutral-200 text-xs font-semibold text-neutral-800 hover:bg-neutral-100 transition-all shadow-2xs"
+                  >
+                    <Download size={14} className="text-neutral-600" />
+                    <span>Apple / iCal (.ics)</span>
+                  </button>
+                </div>
+
+                {/* Pase Apple / Google Wallet */}
+                <button
+                  type="button"
+                  onClick={() => alert(`Pase Digital de Reserva ${code} emitido con éxito. Puedes consultarlo en la pestaña "Mis Pases" de tu Bukea Wallet.`)}
+                  className="w-full flex items-center justify-center gap-2 px-3 py-2 rounded-xl bg-neutral-900 hover:bg-black text-white text-xs font-semibold transition-all shadow-2xs mt-1"
+                >
+                  <Smartphone size={14} />
+                  <span>Guardar Pase Digital con QR (Wallet)</span>
+                </button>
+              </div>
 
               <div className="grid grid-cols-2 gap-3 pt-3 border-t border-black/10">
                 <button

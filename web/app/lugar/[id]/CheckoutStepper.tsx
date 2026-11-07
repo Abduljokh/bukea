@@ -64,8 +64,9 @@ export default function CheckoutStepper({
   // Stepper Accordion state (1, 2, or 3)
   const [activeStep, setActiveStep] = useState<1 | 2 | 3>(1);
 
-  // Countdown timer: 5 minutes (300 seconds)
+  // Countdown timer: 5 minutes (300 seconds) + Atomic Hold ID (inspirado en OpenResto)
   const [timeLeft, setTimeLeft] = useState(250); // 04:10 inicial para coincidir con la referencia
+  const [holdId] = useState(() => `hold_${Math.random().toString(36).substring(2, 8)}`);
 
   useEffect(() => {
     if (!isOpen) return;
@@ -296,9 +297,14 @@ export default function CheckoutStepper({
             <span className="w-2 h-2 rounded-full bg-amber-500 animate-pulse shrink-0" />
             <span>PASO 2 DE 2 · CHECKOUT RÁPIDO</span>
           </div>
-          <div className="flex items-center gap-1 font-mono text-[11px] font-bold text-amber-950 bg-amber-100/70 px-2 py-0.5 rounded-md border border-amber-300/40">
-            <Clock size={12} className="text-amber-700" />
-            <span>Mesa retenida: {formatTimer(timeLeft)}</span>
+          <div className="flex items-center gap-1.5">
+            <span className="hidden sm:inline font-mono text-[10px] text-amber-800/80 uppercase font-semibold">
+              ID {holdId}
+            </span>
+            <div className="flex items-center gap-1 font-mono text-[11px] font-bold text-amber-950 bg-amber-100/70 px-2 py-0.5 rounded-md border border-amber-300/40">
+              <Clock size={12} className="text-amber-700" />
+              <span>Mesa retenida: {formatTimer(timeLeft)}</span>
+            </div>
           </div>
         </div>
 

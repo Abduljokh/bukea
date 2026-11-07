@@ -71,6 +71,7 @@
      - Información general y descripción, cocina/especialidad (`Comida [TIPO]`), dirección, WhatsApp y teléfono.
      - Gestor multimedia: subida y actualización de Logo oficial, portada panorámica y galería fotográfica.
      - Horarios semanales, tiempo de tolerancia de reserva y capacidad total.
+     - **Control de Pacing & Ritmo de Cocina (inspirado en OpenResto):** Límite máximo de comensales que pueden reservar cada 15 min (evita colapso de cocina) y tiempo promedio de rotación de mesa (Turnaround).
      - **Gestor de Menú Digital Completo (CRUD):** Add (crear plato/servicio), Edit (precios en USD y Bs BCV), Move/Reorder (subir/bajar posición) y Delete con confirmación, más toggle instantáneo de disponible / agotado hoy.
   3. **POS All-in-One & Cocina KDS (`/partner/pos`):**
      - Inspirado en Kamra: Pantalla de Cocina (KDS) Kanban con SLA de preparación, comandero digital y tickets térmicos escaneables con QR para Bukea-Pay.
