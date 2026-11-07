@@ -576,33 +576,18 @@ export default function LugarPage() {
 
       {/* MODAL: MENÚ DIGITAL COMPLETO */}
       {menuDigital && (
-        <div className="fixed inset-0 bg-white z-50 overflow-y-auto">
-          <header className="liquid-glass-header flex items-center justify-between">
-            <button
-              onClick={() => setMenuDigital(false)}
-              className="w-9 h-9 rounded-full bg-neutral-100 flex items-center justify-center text-black"
-            >
-              <ArrowLeft size={17} />
-            </button>
-            <div className="flex items-center gap-1.5">
-              <span className="font-logo text-xl text-black pt-0.5">Bukea</span>
-              <span className="text-xs text-neutral-400 font-light font-text">×</span>
-              <span className="font-semibold text-sm text-black">Carta de {b.name}</span>
-            </div>
-            <div className="w-9" />
-          </header>
-          <div className="max-w-2xl mx-auto p-4">
-            <MenuDigital
-              bizName={b.name}
-              whatsapp={b.whatsapp}
-              onGoToReserve={() => {
-                setMenuDigital(false);
-                setTimeout(() => {
-                  document.getElementById('reserva-section')?.scrollIntoView({ behavior: 'smooth' });
-                }, 150);
-              }}
-            />
-          </div>
+        <div id="menu-digital-modal" className="fixed inset-0 bg-[#FAFAFA] z-50 overflow-y-auto">
+          <MenuDigital
+            bizName={b.name}
+            whatsapp={b.whatsapp}
+            onClose={() => setMenuDigital(false)}
+            onGoToReserve={() => {
+              setMenuDigital(false);
+              setTimeout(() => {
+                document.getElementById('reserva-section')?.scrollIntoView({ behavior: 'smooth' });
+              }, 150);
+            }}
+          />
         </div>
       )}
 
@@ -614,7 +599,7 @@ export default function LugarPage() {
               onClick={() => setTourOpen(false)}
               className="absolute top-4 right-4 z-50 px-4 py-1.5 rounded-full bg-black/80 text-white text-xs font-semibold backdrop-blur-md border border-white/20"
             >
-              Cerrar ✕
+              Cerrar
             </button>
             <iframe
               src={b.tour_360}

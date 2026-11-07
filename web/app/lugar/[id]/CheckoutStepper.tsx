@@ -349,8 +349,9 @@ export default function CheckoutStepper({
                 </div>
                 <div>
                   <div className="flex items-center gap-2">
-                    <span className="font-bold text-xs uppercase tracking-wider text-black">
-                      ⚡ DATOS DE CONTACTO DIRECTO
+                    <span className="font-bold text-xs uppercase tracking-wider text-black flex items-center gap-1.5">
+                      <User size={14} className="text-black shrink-0" />
+                      <span>Información</span>
                     </span>
                     <span className="px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200 text-[9px] font-bold">
                       SIN CONTRASEÑA
@@ -400,11 +401,11 @@ export default function CheckoutStepper({
                         style={{ paddingRight: '32px' }}
                         className="input-minimal text-xs font-medium bg-neutral-50/60 focus:bg-white cursor-pointer"
                       >
-                        <option value="+58">🇻🇪 +58</option>
-                        <option value="+1">🇺🇸 +1</option>
-                        <option value="+34">🇪🇸 +34</option>
-                        <option value="+57">🇨🇴 +57</option>
-                        <option value="+52">🇲🇽 +52</option>
+                        <option value="+58">VE +58</option>
+                        <option value="+1">US +1</option>
+                        <option value="+34">ES +34</option>
+                        <option value="+57">CO +57</option>
+                        <option value="+52">MX +52</option>
                       </select>
                       <ChevronDown size={13} className="absolute right-2.5 top-1/2 -translate-y-1/2 text-neutral-400 pointer-events-none" />
                     </div>
@@ -488,9 +489,9 @@ export default function CheckoutStepper({
                 </div>
                 <div>
                   <div className="flex items-center gap-2">
-                    <span className="font-bold text-xs uppercase tracking-wider text-black flex items-center gap-1">
-                      <ShieldCheck size={14} className="text-emerald-600" />
-                      <span>ESCUDO ANTI-SPAM</span>
+                    <span className="font-bold text-xs uppercase tracking-wider text-black flex items-center gap-1.5">
+                      <ShieldCheck size={14} className="text-emerald-600 shrink-0" />
+                      <span>Verificación</span>
                     </span>
                     <span className="px-2 py-0.5 rounded-full bg-amber-50 text-amber-800 border border-amber-200 text-[9px] font-bold">
                       CERO BOTS
@@ -623,7 +624,10 @@ export default function CheckoutStepper({
                         {paymentMethod === 'binance' && 'PAGO DIRECTO EN USDT'}
                         {paymentMethod === 'stripe' && 'VISA / MASTERCARD INTERNACIONAL ($1 USD)'}
                       </span>
-                      <span className="text-emerald-700 font-bold">⚡ VERIFICACIÓN EN 5 SEG</span>
+                      <span className="text-emerald-700 font-bold flex items-center gap-1">
+                        <Zap size={11} className="fill-current text-emerald-600" />
+                        <span>VERIFICACIÓN EN 5 SEG</span>
+                      </span>
                     </div>
                   </div>
                 )}
@@ -654,11 +658,21 @@ export default function CheckoutStepper({
                 </div>
                 <div>
                   <div className="flex items-center gap-2">
-                    <span className="font-bold text-xs uppercase tracking-wider text-black">
-                      {paymentMethod === 'c2p' && 'VERIFICACIÓN BANCARIA C2P'}
-                      {paymentMethod === 'pagomovil' && 'DATOS DE PAGO MÓVIL'}
-                      {paymentMethod === 'binance' && 'DETALLES DE PAGO BINANCE'}
-                      {paymentMethod === 'stripe' && 'DATOS DE TARJETA STRIPE'}
+                    <span className="font-bold text-xs uppercase tracking-wider text-black flex items-center gap-1.5">
+                      <CreditCard size={14} className="text-black shrink-0" />
+                      <span>
+                        Pago ({
+                          guaranteeType === 'puntos'
+                            ? 'Puntos Bukea'
+                            : paymentMethod === 'c2p'
+                            ? 'C2P'
+                            : paymentMethod === 'pagomovil'
+                            ? 'Pago Móvil'
+                            : paymentMethod === 'binance'
+                            ? 'Binance Pay'
+                            : 'Stripe'
+                        })
+                      </span>
                     </span>
                     <span className="px-2 py-0.5 rounded-full bg-neutral-100 text-neutral-700 border border-black/10 text-[9px] font-bold">
                       {guaranteeType === 'puntos' ? '1 PUNTO' : paymentMethod === 'binance' ? '1.00 USDT' : '$1.00 USD'}
@@ -786,9 +800,16 @@ export default function CheckoutStepper({
                             <button
                               type="button"
                               onClick={() => setRequestedToken(true)}
-                              className="text-[10px] font-bold text-amber-700 hover:text-amber-800 uppercase tracking-wider cursor-pointer"
+                              className="text-[10px] font-bold text-amber-700 hover:text-amber-800 uppercase tracking-wider cursor-pointer flex items-center gap-1"
                             >
-                              {requestedToken ? '✓ CLAVE ENVIADA' : 'SOLICITAR CLAVE'}
+                              {requestedToken ? (
+                                <>
+                                  <Check size={11} strokeWidth={3} />
+                                  <span>CLAVE ENVIADA</span>
+                                </>
+                              ) : (
+                                'SOLICITAR CLAVE'
+                              )}
                             </button>
                           </div>
                           <div className="relative">
