@@ -1,6 +1,7 @@
 import './globals.css';
 import Script from 'next/script';
 import type { Metadata, Viewport } from 'next';
+import { BcvProvider } from './context/BcvContext';
 
 export const metadata: Metadata = {
   title: 'Bukea — Reserva con estatus',
@@ -29,7 +30,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         />
       </head>
       <body className="antialiased bg-white text-[#0A0A0A] min-h-screen font-text selection:bg-neutral-900 selection:text-white">
-        {children}
+        <BcvProvider>
+          {children}
+        </BcvProvider>
         <Script
           type="module"
           src="https://ajax.googleapis.com/ajax/libs/model-viewer/4.0.0/model-viewer.min.js"

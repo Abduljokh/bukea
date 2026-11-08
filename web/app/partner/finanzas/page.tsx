@@ -18,9 +18,11 @@ import {
   CheckCircle2,
 } from 'lucide-react';
 import { usePartner } from '../PartnerContext';
+import { useBcv } from '@/app/context/BcvContext';
 
 export default function PartnerFinanzasPage() {
   const { business } = usePartner();
+  const { bcvRate, toBs } = useBcv();
 
   const [activeTab, setActiveTab] = useState<'puntos' | 'orquestador' | 'split'>('puntos');
 
@@ -106,11 +108,14 @@ export default function PartnerFinanzasPage() {
                 <span className="text-xs font-semibold uppercase tracking-wider text-neutral-400">
                   Saldo Acumulado en Puntos Canjeados
                 </span>
-                <div className="flex items-baseline gap-2 mt-1">
+                <div className="flex flex-wrap items-baseline gap-2 mt-1">
                   <span className="text-4xl font-bold tracking-tight">
                     ${business.bukeaPointsDebtUSD.toFixed(2)}
                   </span>
                   <span className="text-sm text-neutral-400 font-medium">USD</span>
+                  <span className="text-sm font-semibold text-emerald-400 font-mono">
+                    · {toBs(business.bukeaPointsDebtUSD)} (BCV)
+                  </span>
                 </div>
                 <p className="text-xs text-neutral-400 mt-1 max-w-lg">
                   Los comensales canjearon puntos Bukea en su cuenta en tu local. Bukea te reembolsa el 100% de este saldo a tu cuenta bancaria sin comisiones.
@@ -214,6 +219,9 @@ export default function PartnerFinanzasPage() {
                   onChange={(e) => setLinkMonto(e.target.value)}
                   className="w-full px-3.5 py-2.5 rounded-xl border border-neutral-200 text-sm font-bold focus:outline-none focus:border-neutral-900"
                 />
+                <p className="text-[10px] text-neutral-500 mt-1 font-medium">
+                  Equivalente en Bolívares: <strong className="text-neutral-900 font-mono">{toBs(Number(linkMonto) || 0)}</strong> (BCV: Bs. {bcvRate.toFixed(2)})
+                </p>
               </div>
 
               <div>

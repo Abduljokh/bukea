@@ -26,6 +26,7 @@ import {
   ShieldCheck
 } from 'lucide-react';
 import { generateGoogleCalendarUrl, downloadIcsFile } from '@/app/utils/calendarExport';
+import { useBcv } from '@/app/context/BcvContext';
 import { 
   Business, 
   BUSINESSES_MOCK, 
@@ -59,6 +60,7 @@ const fmtDate = (d: string) => {
 };
 
 export default function LugarPage() {
+  const { bcvRate, toBs } = useBcv();
   const { id } = useParams<{ id: string }>();
   const router = useRouter();
   const [b, setB] = useState<Business | null>(() => {
@@ -550,7 +552,12 @@ export default function LugarPage() {
                   <div className="font-semibold text-xs text-black group-hover:text-neutral-700 truncate">
                     {dish.name}
                   </div>
-                  <div className="text-xs text-neutral-900 font-bold mt-0.5">{dish.price}</div>
+                  <div className="text-xs text-neutral-900 font-bold mt-0.5 flex items-baseline gap-1.5">
+                    <span>{dish.price}</span>
+                    <span className="text-[10px] text-neutral-500 font-medium">
+                      · {toBs(Number(dish.price.replace(/[^0-9.]/g, '')) || 15)}
+                    </span>
+                  </div>
                   <div className="text-[10px] text-neutral-500 flex items-center gap-1 mt-1">
                     <Box size={11} className="text-black" />
                     <span>Ver en 3D / AR</span>

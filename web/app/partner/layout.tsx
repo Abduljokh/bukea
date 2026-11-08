@@ -24,6 +24,7 @@ import {
   Check,
 } from 'lucide-react';
 import { PartnerProvider, usePartner } from './PartnerContext';
+import { useBcv } from '@/app/context/BcvContext';
 
 const NAV_ITEMS = [
   { href: '/partner', label: 'Gestión del Lugar', icon: LayoutDashboard },
@@ -38,6 +39,7 @@ const NAV_ITEMS = [
 
 function PartnerShell({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
+  const { bcvRate } = useBcv();
   const {
     business,
     activeBusinessId,
@@ -210,8 +212,15 @@ function PartnerShell({ children }: { children: React.ReactNode }) {
             </div>
           </div>
 
-          {/* ACCIONES CRÍTICAS (KILL SWITCH & WALK-IN) */}
+          {/* ACCIONES CRÍTICAS (BCV, KILL SWITCH & WALK-IN) */}
           <div className="flex items-center gap-2">
+            {/* Tasa Oficial BCV */}
+            <div className="hidden lg:flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-neutral-50 border border-neutral-200/80 text-xs">
+              <Coins className="w-3.5 h-3.5 text-neutral-600" />
+              <span className="text-neutral-500">BCV:</span>
+              <span className="font-bold text-neutral-900 font-mono">Bs. {bcvRate.toFixed(2)}</span>
+            </div>
+
             {/* Kill Switch Toggle */}
             <button
               onClick={() => setShowPauseModal(true)}

@@ -17,8 +17,10 @@ import {
   Receipt,
   Layers,
   Search,
+  Coins,
 } from 'lucide-react';
 import { usePartner } from '../PartnerContext';
+import { useBcv } from '@/app/context/BcvContext';
 
 interface OrderItem {
   dishId: string;
@@ -78,6 +80,7 @@ const INITIAL_ORDERS: TableOrder[] = [
 
 export default function PartnerPOSPage() {
   const { business } = usePartner();
+  const { bcvRate, toBs } = useBcv();
 
   const [activeTab, setActiveTab] = useState<'kds' | 'comanda' | 'inventario'>('kds');
   const [orders, setOrders] = useState<TableOrder[]>(INITIAL_ORDERS);
@@ -386,7 +389,7 @@ export default function PartnerPOSPage() {
                       <h4 className="text-xs font-bold text-neutral-900">{dish.name}</h4>
                       <p className="text-[11px] text-neutral-400">{dish.category}</p>
                       <p className="text-xs font-bold text-neutral-900 mt-1">
-                        ${dish.priceUSD.toFixed(2)} USD
+                        ${dish.priceUSD.toFixed(2)} USD <span className="text-[10px] text-neutral-500 font-normal">· {toBs(dish.priceUSD)}</span>
                       </p>
                     </div>
                     <div className="w-8 h-8 rounded-xl bg-neutral-100 flex items-center justify-center text-neutral-900 hover:bg-neutral-900 hover:text-white transition-all shrink-0">
@@ -466,9 +469,15 @@ export default function PartnerPOSPage() {
 
             {/* Total & Enviar */}
             <div className="pt-3 border-t border-neutral-100 space-y-3">
-              <div className="flex justify-between text-sm font-bold text-neutral-900">
-                <span>Total Estimado:</span>
-                <span>${cartTotalUSD.toFixed(2)} USD</span>
+              <div className="space-y-1">
+                <div className="flex justify-between text-sm font-bold text-neutral-900">
+                  <span>Total Estimado:</span>
+                  <span>${cartTotalUSD.toFixed(2)} USD</span>
+                </div>
+                <div className="flex justify-between text-xs font-semibold text-neutral-500">
+                  <span>Total en Bolívares (BCV):</span>
+                  <span className="font-mono text-neutral-900">{toBs(cartTotalUSD)}</span>
+                </div>
               </div>
 
               <button
@@ -550,15 +559,26 @@ export default function PartnerPOSPage() {
               ))}
             </div>
 
-            <div className="pt-2 border-t border-dashed border-neutral-300 flex justify-between font-bold text-neutral-900">
-              <span>TOTAL:</span>
-              <span>
-                $
-                {printTicketOrder.items
-                  .reduce((acc, it) => acc + it.priceUSD * it.qty, 0)
-                  .toFixed(2)}{' '}
-                USD
-              </span>
+            <div className="pt-2 border-t border-dashed border-neutral-300 space-y-1 font-bold text-neutral-900">
+              <div className="flex justify-between">
+                <span>TOTAL USD:</span>
+                <span>
+                  $
+                  {printTicketOrder.items
+                    .reduce((acc, it) => acc + it.priceUSD * it.qty, 0)
+                    .toFixed(2)}{' '}
+                  USD
+                </span>
+              </div>
+              <div className="flex justify-between text-[11px] text-neutral-700">
+                <span>TOTAL BCV:</span>
+                <span>
+                  {toBs(printTicketOrder.items.reduce((acc, it) => acc + it.priceUSD * it.qty, 0))}
+                </span>
+              </div>
+              <div className="text-[9px] text-neutral-400 font-normal text-right">
+                Tasa oficial BCV: Bs. {bcvRate.toFixed(2)}
+              </div>
             </div>
 
             <div className="mt-4 pt-3 text-center border-t border-neutral-200">

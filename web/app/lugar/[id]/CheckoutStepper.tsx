@@ -28,6 +28,7 @@ import {
   QrCode
 } from 'lucide-react';
 import { Business } from '@/app/data/businesses';
+import { useBcv } from '@/app/context/BcvContext';
 
 interface CheckoutStepperProps {
   isOpen: boolean;
@@ -61,6 +62,7 @@ export default function CheckoutStepper({
   size,
   onSuccess,
 }: CheckoutStepperProps) {
+  const { bcvRate, toBs } = useBcv();
   // Stepper Accordion state (1, 2, or 3)
   const [activeStep, setActiveStep] = useState<1 | 2 | 3>(1);
 
@@ -625,10 +627,10 @@ export default function CheckoutStepper({
 
                     <div className="flex items-center justify-between text-[10px] font-mono text-neutral-500 mt-2 px-1">
                       <span>
-                        {paymentMethod === 'c2p' && 'DÉBITO INMEDIATO C2P (BS. 36.50)'}
-                        {paymentMethod === 'pagomovil' && 'TRANSFERENCIA PAGO MÓVIL (BS. 36.50)'}
+                        {paymentMethod === 'c2p' && `DÉBITO INMEDIATO C2P (BS. ${bcvRate.toFixed(2)} BCV)`}
+                        {paymentMethod === 'pagomovil' && `TRANSFERENCIA PAGO MÓVIL (BS. ${bcvRate.toFixed(2)} BCV)`}
                         {paymentMethod === 'binance' && 'PAGO DIRECTO EN USDT'}
-                        {paymentMethod === 'stripe' && 'VISA / MASTERCARD INTERNACIONAL ($1 USD)'}
+                        {paymentMethod === 'stripe' && `TARJETAS ($1 USD · BS. ${bcvRate.toFixed(2)})`}
                       </span>
                       <span className="text-emerald-700 font-bold flex items-center gap-1">
                         <Zap size={11} className="fill-current text-emerald-600" />

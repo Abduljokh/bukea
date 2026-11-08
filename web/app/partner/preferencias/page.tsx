@@ -25,8 +25,10 @@ import {
 } from 'lucide-react';
 import { usePartner } from '../PartnerContext';
 import { PartnerDish, PartnerTable } from '../data/partnerData';
+import { useBcv } from '@/app/context/BcvContext';
 
 export default function PartnerPreferenciasPage() {
+  const { bcvRate, toBs } = useBcv();
   const {
     business,
     updateBusinessProfile,
@@ -892,8 +894,9 @@ export default function PartnerPreferenciasPage() {
                             ${dish.priceUSD.toFixed(2)}{' '}
                             <span className="text-[10px] text-neutral-400 font-normal">USD</span>
                           </span>
-                          <span className="text-[11px] text-neutral-400">
-                            (Aprox. Bs. {(dish.priceUSD * 36.5).toFixed(2)} BCV)
+                          <span className="text-[11px] text-neutral-600 font-medium">
+                            · {toBs(dish.priceUSD)}{' '}
+                            <span className="text-[10px] text-neutral-400 font-normal">(BCV)</span>
                           </span>
                         </div>
                       </div>
@@ -1177,6 +1180,9 @@ export default function PartnerPreferenciasPage() {
                     onChange={(e) => setDishForm({ ...dishForm, priceUSD: Number(e.target.value) })}
                     className="w-full px-3.5 py-2.5 rounded-xl border border-neutral-200 text-xs focus:outline-none focus:border-neutral-900"
                   />
+                  <p className="text-[10px] text-neutral-500 mt-1 font-medium">
+                    Al día: <strong className="text-neutral-900">{toBs(Number(dishForm.priceUSD) || 0)}</strong> (BCV: Bs. {bcvRate.toFixed(2)})
+                  </p>
                 </div>
               </div>
 

@@ -30,6 +30,9 @@
    - **LOGO:** `Story Script` (cursiva de autor con personalidad).
    - **TEXTO & UI:** `Barlow` (sans-serif moderna, geométrica y de máxima legibilidad móvil).
    - **ACENTO / ÉNFASIS:** `Cormorant Garamond` (serif editorial para remates de títulos y frases de estatus).
+7. **Precios Duales y Tasa Oficial BCV del Día:**
+   - Endpoint `/api/bcv` que consulta la tasa oficial del Banco Central de Venezuela en tiempo real con caché de 1 hora y fallback local seguro.
+   - En toda la plataforma (Menú Digital, Platos AR, Checkout, POS, Tickets de cocina y Finanzas), los precios se muestran en formato dual: `$ USD` y su equivalente en `Bs. (BCV)` con formato venezolano (`Bs. 34.052,56`).
 
 ---
 

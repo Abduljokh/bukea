@@ -11,8 +11,10 @@ import {
   MessageCircle, 
   CalendarCheck,
   Check,
-  ArrowLeft
+  ArrowLeft,
+  Coins
 } from 'lucide-react';
+import { useBcv } from '@/app/context/BcvContext';
 
 export type Dish = { 
   name: string; 
@@ -135,6 +137,7 @@ export default function MenuDigital({
   onClose,
   onGoToReserve 
 }: MenuDigitalProps) {
+  const { bcvRate, toBs } = useBcv();
   const [activeCat, setActiveCat] = useState('Todos');
   const [search, setSearch] = useState('');
   const [selectedDish, setSelectedDish] = useState<Dish | null>(null);
@@ -285,6 +288,15 @@ export default function MenuDigital({
               </button>
             )}
           </div>
+          {/* Indicador Oficial de Tasa BCV */}
+          <div className="flex items-center justify-between text-[11px] text-neutral-500 pt-1.5 px-0.5">
+            <span className="flex items-center gap-1 font-medium">
+              <Coins size={12} className="text-neutral-700" />
+              <span>Tasa Oficial BCV del día:</span>
+              <strong className="text-neutral-900 font-mono">Bs. {bcvRate.toFixed(2)}</strong>
+            </span>
+            <span className="text-[10px] text-neutral-400">Precios duales en tiempo real</span>
+          </div>
         </div>
 
         {/* Fila 3: Dock de Categorías con Scroll Horizontal y Auto-Highlight */}
@@ -408,7 +420,7 @@ export default function MenuDigital({
               )}
             </div>
 
-            {/* Título & Precio */}
+            {/* Título & Precio Dual */}
             <div className="flex items-start justify-between gap-3 mb-2">
               <div>
                 <span className="text-[10px] uppercase font-bold text-neutral-400 tracking-wider">
@@ -418,9 +430,15 @@ export default function MenuDigital({
                   {selectedDish.name}
                 </h3>
               </div>
-              <span className="text-base sm:text-lg font-mono font-extrabold text-black shrink-0">
-                {selectedDish.price}
-              </span>
+              <div className="text-right shrink-0">
+                <span className="text-base sm:text-lg font-mono font-extrabold text-black block">
+                  {selectedDish.price} <span className="text-xs text-neutral-400 font-normal">USD</span>
+                </span>
+                <span className="text-xs font-semibold text-neutral-600 block mt-0.5">
+                  {toBs(Number(selectedDish.price.replace(/[^0-9.]/g, '')) || 15)}
+                </span>
+                <span className="text-[9px] text-neutral-400 block">Tasa oficial BCV</span>
+              </div>
             </div>
 
             <p className="text-xs text-neutral-600 leading-relaxed mb-4">
@@ -478,6 +496,9 @@ export default function MenuDigital({
 
 // Componente para la Tarjeta de Plato estilo PedidosYa
 function DishCard({ dish, onClick }: { dish: Dish; onClick: () => void }) {
+  const { toBs } = useBcv();
+  const usdValue = Number(dish.price.replace(/[^0-9.]/g, '')) || 15;
+
   return (
     <article
       onClick={onClick}
@@ -506,9 +527,14 @@ function DishCard({ dish, onClick }: { dish: Dish; onClick: () => void }) {
         </p>
 
         <div className="flex items-center justify-between">
-          <span className="font-mono font-extrabold text-xs sm:text-sm text-black">
-            {dish.price}
-          </span>
+          <div className="flex items-baseline gap-1.5">
+            <span className="font-mono font-extrabold text-xs sm:text-sm text-black">
+              {dish.price}
+            </span>
+            <span className="text-[10px] text-neutral-500 font-medium">
+              · {toBs(usdValue)}
+            </span>
+          </div>
           <span className="text-[10px] font-semibold text-neutral-400 group-hover:text-black transition-colors flex items-center gap-0.5">
             <span>Ver detalle</span>
             <ChevronRight size={11} />
