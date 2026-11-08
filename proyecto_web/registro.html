@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Registro de Cuenta</title>
+  <script>
+    // Redirige a la vista de registro integrada de Bukea VIP
+    window.location.replace("index.html?tab=registro");
+  </script>
+  <link rel="stylesheet" href="css/estilos.css">
+</head>
+<body>
+
+  <div class="login-contenedor">
+    <div class="caja-login">
+      
+      <div class="login-encabezado">
+        <h2>Registro de Usuario</h2>
+        <p>Crea una nueva cuenta para acceder al sistema</p>
+      </div>
+
+      <!-- Mensajes de respuesta -->
+      <div id="mensaje-error" class="mensaje-error"></div>
+      <div id="mensaje-exito" class="mensaje-exito"></div>
+
+      <!-- Formulario de Registro -->
+      <form id="form-registro">
+        <div class="campo">
+          <label for="txt-nombre">Nombre Completo</label>
+          <input type="text" id="txt-nombre" placeholder="Ej: Pedro Salazar" required autocomplete="name">
+        </div>
+
+        <div class="campo">
+          <label for="txt-usuario">Nombre de Usuario</label>
+          <input type="text" id="txt-usuario" placeholder="Ej: psalazar" required autocomplete="username">
+        </div>
+
+        <div class="campo">
+          <label for="txt-clave">Contraseña</label>
+          <input type="password" id="txt-clave" placeholder="Mínimo 4 caracteres" required autocomplete="new-password">
+        </div>
+
+        <div class="campo">
+          <label for="txt-clave2">Confirmar Contraseña</label>
+          <input type="password" id="txt-clave2" placeholder="Repite la contraseña" required autocomplete="new-password">
+        </div>
+
+        <div class="campo">
+          <label for="cmb-rol">Rol asignado</label>
+          <select id="cmb-rol">
+            <option value="Consulta" selected>Consulta (Solo lectura)</option>
+            <option value="Operador">Operador (Puede registrar datos)</option>
+            <option value="Administrador">Administrador (Control total)</option>
+          </select>
+        </div>
+
+        <button type="submit" class="btn-ingresar">Registrar Cuenta</button>
+      </form>
+
+      <div style="text-align: center; margin-top: 18px;">
+        <span style="font-size: 13px; color: #64748b;">¿Ya tienes una cuenta?</span>
+        <a href="index.html" style="font-size: 13px; color: #2563eb; text-decoration: none; font-weight: 600; margin-left: 4px;">
+          Iniciar Sesión
+        </a>
+      </div>
+
+    </div>
+  </div>
+
+  <script src="js/registro.js"></script>
+</body>
+</html>

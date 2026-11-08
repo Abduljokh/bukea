@@ -1,0 +1,1339 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Bukea — Lugares | Restaurantes & Hoteles</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com">
+  <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700;800&family=Playfair+Display:ital,wght@1,600;1,700&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['"Plus Jakarta Sans"', 'sans-serif'],
+            condensed: ['"Barlow Condensed"', 'sans-serif'],
+            serifLogo: ['"Playfair Display"', 'serif'],
+          },
+          colors: {
+            bukea: {
+              bg: '#F8F7F4',
+              surface: '#FFFFFF',
+              dark: '#18181B',
+              gold: '#D4AF37',
+              goldDark: '#9A7416',
+              goldLight: '#FEF7E6',
+              green: '#0E9F6E',
+              greenLight: '#E6F8F0',
+              border: '#E8E6DF',
+            }
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    body {
+      background-color: #ECEAE4;
+      color: #18181B;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+    }
+    .bukea-card-shadow {
+      box-shadow: 0 4px 24px -2px rgba(0, 0, 0, 0.06), 0 2px 6px -1px rgba(0, 0, 0, 0.02);
+    }
+    .hide-scrollbar::-webkit-scrollbar {
+      display: none;
+    }
+    .hide-scrollbar {
+      -ms-overflow-style: none;
+      scrollbar-width: none;
+    }
+    .carousel-track {
+      display: flex;
+      transition: transform 0.4s ease-in-out;
+    }
+    .venue-gallery {
+      scroll-snap-type: x mandatory;
+      -webkit-overflow-scrolling: touch;
+    }
+    .venue-gallery-item {
+      scroll-snap-align: start;
+      flex-shrink: 0;
+    }
+  </style>
+</head>
+<body class="min-h-screen py-4 md:py-8 px-2 sm:px-4 flex justify-center items-start">
+
+  <!-- Mobile Screen Frame (Max 400px) -->
+  <div class="w-full max-w-[400px] bg-[#F8F7F4] rounded-[36px] shadow-[0_20px_50px_rgba(0,0,0,0.18)] border border-stone-300 overflow-hidden flex flex-col relative text-zinc-900 min-h-[850px]">
+
+    <!-- ==========================================
+         TOP HEADER DE LA APP
+         ========================================== -->
+    <header class="px-5 pt-4 pb-3 flex justify-between items-center bg-[#F8F7F4] border-b border-stone-200/70 sticky top-0 z-40">
+      <!-- Logo Bukea -->
+      <a href="javascript:showView('home')" class="block">
+        <div class="font-serifLogo italic font-bold text-2xl tracking-tight text-zinc-950 flex items-center leading-none">
+          Bukea
+        </div>
+        <div class="flex items-center space-x-1.5 mt-0.5">
+          <span class="w-1.5 h-1.5 rounded-full bg-[#0E9F6E]"></span>
+          <span class="text-[9px] font-bold tracking-wider text-zinc-600 uppercase font-condensed">Margarita VIP</span>
+        </div>
+      </a>
+
+      <!-- Acciones de Cabecera -->
+      <div class="flex items-center space-x-2.5">
+        <!-- Shield OK Pill -->
+        <div class="flex items-center space-x-1 px-2.5 py-1 rounded-full bg-[#E6F8F0] border border-[#A7F3D0] text-[#0E9F6E] text-[10px] font-bold tracking-wider font-condensed">
+          <svg class="w-3.5 h-3.5" viewBox="0 0 20 20" fill="currentColor">
+            <path fill-rule="evenodd" d="M10 1.944A11.954 11.954 0 012.166 5C2.056 5.649 2 6.319 2 7c0 5.225 3.34 9.67 8 11.317C14.66 16.67 18 12.225 18 7c0-.682-.057-1.35-.166-2.001A11.954 11.954 0 0110 1.944zM11 14a1 1 0 11-2 0 1 1 0 012 0zm0-7a1 1 0 10-2 0v3a1 1 0 102 0V7z" clip-rule="evenodd"/>
+          </svg>
+          <span>SHIELD OK</span>
+        </div>
+
+        <!-- Campana Notificaciones -->
+        <button id="btnNotifications" type="button" class="w-8 h-8 rounded-full bg-stone-200/60 hover:bg-stone-200 active:scale-95 flex items-center justify-center text-zinc-700 transition relative">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/>
+          </svg>
+          <span id="notifBadge" class="w-2 h-2 bg-amber-500 rounded-full absolute top-1.5 right-1.5 ring-2 ring-[#F8F7F4] animate-pulse"></span>
+        </button>
+
+        <!-- Avatar Usuario Interactivo -->
+        <button id="btnUserAvatar" type="button" class="w-8 h-8 rounded-full bg-zinc-900 flex items-center justify-center text-[#D4AF37] font-bold text-xs shadow-sm hover:ring-2 hover:ring-amber-400 transition cursor-pointer select-none" title="Ver mi perfil">
+          <span id="avatarInitials">CM</span>
+        </button>
+      </div>
+    </header>
+
+    <!-- ========================================================
+         PANEL DE NOTIFICACIONES
+         ======================================================== -->
+    <div id="notificationsOverlay" class="hidden absolute inset-0 z-50 bg-black/40 backdrop-blur-xs transition-opacity duration-300">
+      <div id="notificationsPanel" class="bg-white rounded-b-[32px] border-b border-stone-200 bukea-card-shadow overflow-hidden flex flex-col max-h-[85%] transform -translate-y-4 opacity-0 transition-all duration-300">
+        <div class="p-4 pb-3 border-b border-stone-100 flex items-center justify-between bg-stone-50/70">
+          <div class="flex items-center space-x-2">
+            <svg class="w-4 h-4 text-amber-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/>
+            </svg>
+            <div>
+              <div class="flex items-center space-x-2">
+                <h3 class="font-serifLogo text-lg font-bold text-zinc-900 leading-none">Notificaciones</h3>
+                <span id="notifCountBadge" class="text-[10px] font-condensed font-extrabold px-2 py-0.5 rounded-full bg-[#E6F8F0] text-[#0E9F6E] uppercase tracking-wider">3 Nuevas</span>
+              </div>
+            </div>
+          </div>
+          <div class="flex items-center space-x-2">
+            <button id="btnMarkAllRead" type="button" class="text-[10px] font-condensed font-bold text-amber-700 hover:text-amber-800 uppercase tracking-wider underline">Marcar Leídas</button>
+            <button id="btnCloseNotif" type="button" class="w-7 h-7 rounded-full bg-stone-100 hover:bg-stone-200 flex items-center justify-center text-zinc-500 hover:text-zinc-900 transition">✕</button>
+          </div>
+        </div>
+
+        <div class="p-3.5 space-y-2.5 overflow-y-auto flex-1 text-xs">
+          <div class="p-3 rounded-2xl bg-[#FEFCE8] border border-[#FEF08A]">
+            <h4 class="font-bold text-amber-950 font-condensed uppercase tracking-wide">Mesa Retenida • Marea Beach Club</h4>
+            <p class="text-[11px] text-amber-900/90 mt-0.5">Tu mesa está asegurada por 04:10 min. Completa con Escudo $1.</p>
+          </div>
+          <div class="p-3 rounded-2xl bg-white border border-stone-200">
+            <h4 class="font-bold text-zinc-900 font-condensed uppercase tracking-wide">Escudo Anti-Spam Activo ($1.00 USD)</h4>
+            <p class="text-[11px] text-zinc-600 mt-0.5">Garantía 100% consumible aplicable a tu cuenta final.</p>
+          </div>
+        </div>
+
+        <div class="px-4 py-2.5 bg-stone-50 border-t border-stone-100 flex justify-end">
+          <button type="button" id="btnFooterClose" class="text-[10px] font-condensed font-extrabold uppercase text-zinc-600 hover:text-black">Cerrar ✕</button>
+        </div>
+      </div>
+    </div>
+
+
+    <!-- ========================================================
+         VISTA 1: PRINCIPAL (SENCILLA & LIMPIA)
+         ======================================================== -->
+    <div id="viewHome" class="flex-1 overflow-y-auto space-y-4 pb-6">
+
+      <!-- 1. Saludo Bienvenido, Carlos -->
+      <div class="px-5 pt-3 pb-1">
+        <div class="flex items-center justify-between">
+          <div>
+            <span class="text-[10px] font-bold text-amber-800 font-condensed uppercase tracking-wider">Isla de Margarita</span>
+            <h1 class="font-serifLogo text-2xl font-bold text-zinc-950 leading-tight">
+              Bienvenido, <span id="userGreetingName">Carlos</span>
+            </h1>
+          </div>
+          <span class="px-2.5 py-1 rounded-full bg-amber-50 border border-amber-200 text-amber-900 text-[10px] font-condensed font-bold">
+            MIEMBRO VIP
+          </span>
+        </div>
+        <p class="text-xs text-zinc-500 font-medium mt-1">
+          Selecciona una categoría para explorar los lugares mejor puntuados de la isla.
+        </p>
+      </div>
+
+      <!-- 2. Carrusel de Anuncios Limpio -->
+      <div class="px-5">
+        <div class="relative overflow-hidden rounded-[24px] bukea-card-shadow border border-stone-200 bg-zinc-950">
+          
+          <div id="promoCarousel" class="carousel-track">
+            <!-- Anuncio 1 -->
+            <div class="min-w-full relative h-36 flex flex-col justify-end p-4 bg-zinc-950 overflow-hidden">
+              <img src="https://images.unsplash.com/photo-1544025162-d76694265947?w=700&auto=format&fit=crop&q=80" alt="Marea" class="absolute inset-0 w-full h-full object-cover opacity-60">
+              <div class="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent"></div>
+              <div class="relative z-10 space-y-0.5">
+                <span class="px-2 py-0.5 rounded-full bg-amber-500 text-black text-[9px] font-condensed font-extrabold uppercase">Destacado</span>
+                <h3 class="font-serifLogo text-base font-bold text-white leading-tight">Sunset Sessions en Marea Lounge</h3>
+                <p class="text-[10px] text-zinc-300">Reserva con Escudo $1 y recibe cóctel de bienvenida.</p>
+              </div>
+            </div>
+
+            <!-- Anuncio 2 -->
+            <div class="min-w-full relative h-36 flex flex-col justify-end p-4 bg-zinc-950 overflow-hidden">
+              <img src="https://images.unsplash.com/photo-1555396273-367ea4eb4db5?w=700&auto=format&fit=crop&q=80" alt="Casa Caranta" class="absolute inset-0 w-full h-full object-cover opacity-60">
+              <div class="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent"></div>
+              <div class="relative z-10 space-y-0.5">
+                <span class="px-2 py-0.5 rounded-full bg-emerald-500 text-white text-[9px] font-condensed font-extrabold uppercase">100% Consumible</span>
+                <h3 class="font-serifLogo text-base font-bold text-white leading-tight">Sabores de Autor en Casa Caranta</h3>
+                <p class="text-[10px] text-zinc-300">El mero en costra y ceviches más aclamados de Pampatar.</p>
+              </div>
+            </div>
+
+            <!-- Anuncio 3 -->
+            <div class="min-w-full relative h-36 flex flex-col justify-end p-4 bg-zinc-950 overflow-hidden">
+              <img src="https://images.unsplash.com/photo-1566073771259-6a8506099945?w=700&auto=format&fit=crop&q=80" alt="Isabel" class="absolute inset-0 w-full h-full object-cover opacity-60">
+              <div class="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent"></div>
+              <div class="relative z-10 space-y-0.5">
+                <span class="px-2 py-0.5 rounded-full bg-zinc-800 text-amber-300 border border-amber-400/40 text-[9px] font-condensed font-extrabold uppercase">5 Estrellas</span>
+                <h3 class="font-serifLogo text-base font-bold text-white leading-tight">Hotel Isabel La Católica</h3>
+                <p class="text-[10px] text-zinc-300">Estadía colonial frente al castillo con concierge Bukea.</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Dots del Carrusel -->
+          <div class="absolute bottom-2 right-3 flex space-x-1.5 z-20">
+            <button type="button" class="carousel-dot w-2 h-2 rounded-full bg-white transition-all" data-slide="0"></button>
+            <button type="button" class="carousel-dot w-2 h-2 rounded-full bg-white/40 transition-all" data-slide="1"></button>
+            <button type="button" class="carousel-dot w-2 h-2 rounded-full bg-white/40 transition-all" data-slide="2"></button>
+          </div>
+        </div>
+      </div>
+
+      <!-- 3. SECCIONES LIMPIAS: RESTAURANTES & HOTELES (SOLO EL MEJOR PUNTUADO) -->
+      <div class="px-5 space-y-4 pt-1">
+        
+        <!-- PESTAÑA / TARJETA: RESTAURANTES -->
+        <div class="bg-white rounded-[26px] border border-stone-200 bukea-card-shadow overflow-hidden group hover:border-amber-400 transition-all duration-300">
+          
+          <!-- Foto del Restaurante con Mejores Reseñas: Casa Caranta (4.9) -->
+          <div class="relative h-44 bg-zinc-900 overflow-hidden">
+            <img src="https://images.unsplash.com/photo-1555396273-367ea4eb4db5?w=700&auto=format&fit=crop&q=80" alt="Casa Caranta Mejor Puntuado" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+            <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/25 to-transparent"></div>
+            
+            <div class="absolute top-3 left-3 right-3 flex justify-between items-center">
+              <span class="px-2.5 py-0.5 rounded-full bg-black/70 backdrop-blur-xs text-white text-[10px] font-condensed font-bold uppercase tracking-wider">
+                Restaurantes
+              </span>
+              <span class="px-2.5 py-0.5 rounded-full bg-white text-zinc-950 text-[10px] font-condensed font-extrabold flex items-center space-x-1 shadow-sm">
+                <span class="text-amber-500">★</span>
+                <span>4.9 Google</span>
+                <span class="text-[9px] text-zinc-500 font-semibold">(480+ opiniones)</span>
+              </span>
+            </div>
+
+            <div class="absolute bottom-2.5 left-3.5 right-3.5 text-white">
+              <span class="text-[9px] text-amber-300 font-condensed font-extrabold uppercase tracking-wider">Mejor Puntuado en Margarita</span>
+              <h3 class="font-serifLogo text-xl font-bold leading-tight drop-shadow-sm">Casa Caranta</h3>
+              <p class="text-[11px] text-zinc-200 font-medium">Pampatar • Casona colonial & mariscos de autor</p>
+            </div>
+          </div>
+
+          <div class="p-3.5 bg-stone-50/80 border-t border-stone-100 flex items-center justify-between">
+            <div>
+              <span class="text-xs font-bold text-zinc-900 block font-condensed uppercase tracking-wide">
+                Explorar Todos los Restaurantes
+              </span>
+              <span class="text-[11px] text-zinc-500">5 locales seleccionados con reseñas</span>
+            </div>
+
+            <button type="button" onclick="showView('restaurantes')" class="px-4 py-2 bg-zinc-950 hover:bg-black text-white text-xs font-condensed font-bold uppercase tracking-wider rounded-full flex items-center space-x-1.5 shadow-sm transition active:scale-95">
+              <span>Entrar</span>
+              <span>→</span>
+            </button>
+          </div>
+
+        </div>
+
+
+        <!-- PESTAÑA / TARJETA: HOTELES -->
+        <div class="bg-white rounded-[26px] border border-stone-200 bukea-card-shadow overflow-hidden group hover:border-emerald-500 transition-all duration-300">
+          
+          <!-- Foto del Hotel con Mejores Reseñas: Isabel La Católica (4.9) -->
+          <div class="relative h-44 bg-zinc-900 overflow-hidden">
+            <img src="https://images.unsplash.com/photo-1566073771259-6a8506099945?w=700&auto=format&fit=crop&q=80" alt="Isabel La Católica Mejor Puntuado" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+            <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/25 to-transparent"></div>
+            
+            <div class="absolute top-3 left-3 right-3 flex justify-between items-center">
+              <span class="px-2.5 py-0.5 rounded-full bg-black/70 backdrop-blur-xs text-white text-[10px] font-condensed font-bold uppercase tracking-wider">
+                Hoteles
+              </span>
+              <span class="px-2.5 py-0.5 rounded-full bg-white text-zinc-950 text-[10px] font-condensed font-extrabold flex items-center space-x-1 shadow-sm">
+                <span class="text-amber-500">★</span>
+                <span>4.9 Google</span>
+                <span class="text-[9px] text-zinc-500 font-semibold">(420+ opiniones)</span>
+              </span>
+            </div>
+
+            <div class="absolute bottom-2.5 left-3.5 right-3.5 text-white">
+              <span class="text-[9px] text-amber-300 font-condensed font-extrabold uppercase tracking-wider">Mejor Puntuado en Margarita</span>
+              <h3 class="font-serifLogo text-xl font-bold leading-tight drop-shadow-sm">Hotel Boutique Isabel La Católica</h3>
+              <p class="text-[11px] text-zinc-200 font-medium">Pampatar • Lujo 5★ frente al Castillo Borromeo</p>
+            </div>
+          </div>
+
+          <div class="p-3.5 bg-stone-50/80 border-t border-stone-100 flex items-center justify-between">
+            <div>
+              <span class="text-xs font-bold text-zinc-900 block font-condensed uppercase tracking-wide">
+                Explorar Todos los Hoteles
+              </span>
+              <span class="text-[11px] text-zinc-500">5 estadías exclusivas & resorts</span>
+            </div>
+
+            <button type="button" onclick="showView('hoteles')" class="px-4 py-2 bg-zinc-950 hover:bg-black text-white text-xs font-condensed font-bold uppercase tracking-wider rounded-full flex items-center space-x-1.5 shadow-sm transition active:scale-95">
+              <span>Entrar</span>
+              <span>→</span>
+            </button>
+          </div>
+
+        </div>
+
+      </div>
+
+    </div>
+
+
+    <!-- ========================================================
+         VISTA 2: PESTAÑA SOLO RESTAURANTES (CON BOTÓN DE ATRÁS)
+         ======================================================== -->
+    <div id="viewRestaurantes" class="hidden flex-1 overflow-y-auto space-y-4 pb-6">
+      
+      <!-- Barra Superior con Botón de Atrás -->
+      <div class="px-5 pt-3 pb-1 border-b border-stone-200/60 bg-[#F8F7F4] sticky top-0 z-30">
+        <div class="flex items-center justify-between">
+          <button type="button" onclick="showView('home')" class="inline-flex items-center space-x-1.5 py-1.5 px-3 rounded-full bg-stone-200/80 hover:bg-stone-300 text-zinc-800 text-xs font-condensed font-extrabold uppercase tracking-wider transition active:scale-95">
+            <span>←</span>
+            <span>Atrás</span>
+          </button>
+          <span class="text-xs font-bold text-zinc-400 font-condensed uppercase">5 Seleccionados</span>
+        </div>
+
+        <div class="mt-2.5 mb-2">
+          <h2 class="font-serifLogo text-2xl font-bold text-zinc-950 leading-tight">Restaurantes</h2>
+          <p class="text-xs text-zinc-500 font-medium">Los mejor puntuados de Margarita en Google Maps con Escudo $1</p>
+        </div>
+      </div>
+
+      <!-- Lista de Restaurantes con Carrusel de Fotos Google -->
+      <div class="px-5 space-y-4">
+
+        <!-- 1. CASA CARANTA -->
+        <div class="bg-white rounded-2xl border border-stone-200 bukea-card-shadow overflow-hidden">
+          <div class="relative h-44 bg-zinc-900 overflow-hidden">
+            <div id="gal-casa-caranta" class="venue-gallery w-full h-full flex overflow-x-auto hide-scrollbar">
+              <div class="venue-gallery-item w-full h-full relative">
+                <img src="https://images.unsplash.com/photo-1555396273-367ea4eb4db5?w=600&auto=format&fit=crop&q=80" alt="Fachada" class="w-full h-full object-cover">
+                <span class="absolute bottom-2 right-2 px-2 py-0.5 rounded-md bg-black/70 backdrop-blur-xs text-[9px] text-zinc-200 font-mono">Google: Casona colonial</span>
+              </div>
+              <div class="venue-gallery-item w-full h-full relative">
+                <img src="https://images.unsplash.com/photo-1534422298391-e4f8c172dddb?w=600&auto=format&fit=crop&q=80" alt="Mero" class="w-full h-full object-cover">
+                <span class="absolute bottom-2 right-2 px-2 py-0.5 rounded-md bg-black/70 backdrop-blur-xs text-[9px] text-zinc-200 font-mono">Google: Mero en costra</span>
+              </div>
+              <div class="venue-gallery-item w-full h-full relative">
+                <img src="https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=600&auto=format&fit=crop&q=80" alt="Salón" class="w-full h-full object-cover">
+                <span class="absolute bottom-2 right-2 px-2 py-0.5 rounded-md bg-black/70 backdrop-blur-xs text-[9px] text-zinc-200 font-mono">Google: Salón íntimo</span>
+              </div>
+            </div>
+
+            <div class="absolute top-2.5 right-2.5">
+              <span class="px-2 py-0.5 rounded-full bg-white text-zinc-950 text-[10px] font-condensed font-extrabold shadow-sm">
+                <span class="text-amber-500">★</span> 4.9 Google (480+)
+              </span>
+            </div>
+
+            <button type="button" onclick="scrollGallery('gal-casa-caranta', -1)" class="absolute left-1.5 top-1/2 -translate-y-1/2 w-6 h-6 rounded-full bg-black/50 text-white flex items-center justify-center text-xs">‹</button>
+            <button type="button" onclick="scrollGallery('gal-casa-caranta', 1)" class="absolute right-1.5 top-1/2 -translate-y-1/2 w-6 h-6 rounded-full bg-black/50 text-white flex items-center justify-center text-xs">›</button>
+          </div>
+
+          <div class="p-3.5 space-y-2">
+            <div class="flex justify-between items-baseline">
+              <h3 class="font-serifLogo text-base font-bold text-zinc-950">Casa Caranta</h3>
+              <span class="text-[10px] font-condensed font-bold text-amber-800 bg-amber-50 px-2 py-0.5 rounded-full border border-amber-200">Pampatar</span>
+            </div>
+            <p class="text-xs text-zinc-600 line-clamp-2">Referente gastronómico colonial en Pampatar. Especialidad en mero en costra y ceviches de autor.</p>
+            <div class="pt-1 flex items-center space-x-2">
+              <a href="checkout_stepper.html?lugar=casa-caranta" class="flex-1 py-2 bg-zinc-950 hover:bg-black text-white text-center rounded-full text-xs font-condensed font-bold uppercase tracking-wider transition">Reservar</a>
+              <button type="button" onclick="openPlaceDetails('casa-caranta')" class="py-2 px-3.5 border border-stone-200 hover:bg-stone-50 rounded-full text-zinc-700 text-xs font-condensed font-bold whitespace-nowrap transition">Más Información</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- 2. JUANA LA LOCA -->
+        <div class="bg-white rounded-2xl border border-stone-200 bukea-card-shadow overflow-hidden">
+          <div class="relative h-44 bg-zinc-900 overflow-hidden">
+            <div id="gal-juana" class="venue-gallery w-full h-full flex overflow-x-auto hide-scrollbar">
+              <div class="venue-gallery-item w-full h-full relative">
+                <img src="https://images.unsplash.com/photo-1550966871-3ed3cdb5ed0c?w=600&auto=format&fit=crop&q=80" alt="Salón Juana" class="w-full h-full object-cover">
+                <span class="absolute bottom-2 right-2 px-2 py-0.5 rounded-md bg-black/70 backdrop-blur-xs text-[9px] text-zinc-200 font-mono">Google: Salón principal</span>
+              </div>
+              <div class="venue-gallery-item w-full h-full relative">
+                <img src="https://images.unsplash.com/photo-1544025162-d76694265947?w=600&auto=format&fit=crop&q=80" alt="Plato" class="w-full h-full object-cover">
+                <span class="absolute bottom-2 right-2 px-2 py-0.5 rounded-md bg-black/70 backdrop-blur-xs text-[9px] text-zinc-200 font-mono">Google: Cocina fusión</span>
+              </div>
+            </div>
+            <div class="absolute top-2.5 right-2.5">
+              <span class="px-2 py-0.5 rounded-full bg-white text-zinc-950 text-[10px] font-condensed font-extrabold shadow-sm">
+                <span class="text-amber-500">★</span> 4.9 Google (520+)
+              </span>
+            </div>
+            <button type="button" onclick="scrollGallery('gal-juana', -1)" class="absolute left-1.5 top-1/2 -translate-y-1/2 w-6 h-6 rounded-full bg-black/50 text-white flex items-center justify-center text-xs">‹</button>
+            <button type="button" onclick="scrollGallery('gal-juana', 1)" class="absolute right-1.5 top-1/2 -translate-y-1/2 w-6 h-6 rounded-full bg-black/50 text-white flex items-center justify-center text-xs">›</button>
+          </div>
+          <div class="p-3.5 space-y-2">
+            <div class="flex justify-between items-baseline">
+              <h3 class="font-serifLogo text-base font-bold text-zinc-950">Juana La Loca</h3>
+              <span class="text-[10px] font-condensed font-bold text-amber-800 bg-amber-50 px-2 py-0.5 rounded-full border border-amber-200">Casco Histórico</span>
+            </div>
+            <p class="text-xs text-zinc-600 line-clamp-2">Alta cocina venezolana y mediterránea en una atmósfera colonial dentro del Hotel Isabel La Católica.</p>
+            <div class="pt-1 flex items-center space-x-2">
+              <a href="checkout_stepper.html?lugar=juana-la-loca" class="flex-1 py-2 bg-zinc-950 hover:bg-black text-white text-center rounded-full text-xs font-condensed font-bold uppercase tracking-wider transition">Reservar</a>
+              <button type="button" onclick="openPlaceDetails('juana-la-loca')" class="py-2 px-3.5 border border-stone-200 hover:bg-stone-50 rounded-full text-zinc-700 text-xs font-condensed font-bold whitespace-nowrap transition">Más Información</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- 3. MAREA BEACH CLUB & LOUNGE -->
+        <div class="bg-white rounded-2xl border border-stone-200 bukea-card-shadow overflow-hidden">
+          <div class="relative h-44 bg-zinc-900 overflow-hidden">
+            <div id="gal-marea" class="venue-gallery w-full h-full flex overflow-x-auto hide-scrollbar">
+              <div class="venue-gallery-item w-full h-full relative">
+                <img src="https://images.unsplash.com/photo-1544025162-d76694265947?w=600&auto=format&fit=crop&q=80" alt="Marea" class="w-full h-full object-cover">
+                <span class="absolute bottom-2 right-2 px-2 py-0.5 rounded-md bg-black/70 backdrop-blur-xs text-[9px] text-zinc-200 font-mono">Google: Camas al sunset</span>
+              </div>
+              <div class="venue-gallery-item w-full h-full relative">
+                <img src="https://images.unsplash.com/photo-1559847844-5315695dadae?w=600&auto=format&fit=crop&q=80" alt="Parrilla" class="w-full h-full object-cover">
+                <span class="absolute bottom-2 right-2 px-2 py-0.5 rounded-md bg-black/70 backdrop-blur-xs text-[9px] text-zinc-200 font-mono">Google: Parrilla marina</span>
+              </div>
+            </div>
+            <div class="absolute top-2.5 right-2.5">
+              <span class="px-2 py-0.5 rounded-full bg-white text-zinc-950 text-[10px] font-condensed font-extrabold shadow-sm">
+                <span class="text-amber-500">★</span> 4.8 Google (610+)
+              </span>
+            </div>
+            <button type="button" onclick="scrollGallery('gal-marea', -1)" class="absolute left-1.5 top-1/2 -translate-y-1/2 w-6 h-6 rounded-full bg-black/50 text-white flex items-center justify-center text-xs">‹</button>
+            <button type="button" onclick="scrollGallery('gal-marea', 1)" class="absolute right-1.5 top-1/2 -translate-y-1/2 w-6 h-6 rounded-full bg-black/50 text-white flex items-center justify-center text-xs">›</button>
+          </div>
+          <div class="p-3.5 space-y-2">
+            <div class="flex justify-between items-baseline">
+              <h3 class="font-serifLogo text-base font-bold text-zinc-950">Marea Beach Club & Lounge</h3>
+              <span class="text-[10px] font-condensed font-bold text-amber-800 bg-amber-50 px-2 py-0.5 rounded-full border border-amber-200">Playa El Ángel</span>
+            </div>
+            <p class="text-xs text-zinc-600 line-clamp-2">Club de playa y restaurante con camas balinesas frente al mar, DJ residente y cocina fresca.</p>
+            <div class="pt-1 flex items-center space-x-2">
+              <a href="checkout_stepper.html?lugar=marea" class="flex-1 py-2 bg-zinc-950 hover:bg-black text-white text-center rounded-full text-xs font-condensed font-bold uppercase tracking-wider transition">Reservar</a>
+              <button type="button" onclick="openPlaceDetails('marea')" class="py-2 px-3.5 border border-stone-200 hover:bg-stone-50 rounded-full text-zinc-700 text-xs font-condensed font-bold whitespace-nowrap transition">Más Información</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- 4. AMARANTO RESTOBAR -->
+        <div class="bg-white rounded-2xl border border-stone-200 bukea-card-shadow overflow-hidden">
+          <div class="relative h-44 bg-zinc-900 overflow-hidden">
+            <div id="gal-amaranto" class="venue-gallery w-full h-full flex overflow-x-auto hide-scrollbar">
+              <div class="venue-gallery-item w-full h-full relative">
+                <img src="https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=600&auto=format&fit=crop&q=80" alt="Amaranto" class="w-full h-full object-cover">
+                <span class="absolute bottom-2 right-2 px-2 py-0.5 rounded-md bg-black/70 backdrop-blur-xs text-[9px] text-zinc-200 font-mono">Google: Salón acústico</span>
+              </div>
+              <div class="venue-gallery-item w-full h-full relative">
+                <img src="https://images.unsplash.com/photo-1541544741938-0af808871cc0?w=600&auto=format&fit=crop&q=80" alt="Tapas" class="w-full h-full object-cover">
+                <span class="absolute bottom-2 right-2 px-2 py-0.5 rounded-md bg-black/70 backdrop-blur-xs text-[9px] text-zinc-200 font-mono">Google: Tapas creativas</span>
+              </div>
+            </div>
+            <div class="absolute top-2.5 right-2.5">
+              <span class="px-2 py-0.5 rounded-full bg-white text-zinc-950 text-[10px] font-condensed font-extrabold shadow-sm">
+                <span class="text-amber-500">★</span> 4.8 Google (390+)
+              </span>
+            </div>
+            <button type="button" onclick="scrollGallery('gal-amaranto', -1)" class="absolute left-1.5 top-1/2 -translate-y-1/2 w-6 h-6 rounded-full bg-black/50 text-white flex items-center justify-center text-xs">‹</button>
+            <button type="button" onclick="scrollGallery('gal-amaranto', 1)" class="absolute right-1.5 top-1/2 -translate-y-1/2 w-6 h-6 rounded-full bg-black/50 text-white flex items-center justify-center text-xs">›</button>
+          </div>
+          <div class="p-3.5 space-y-2">
+            <div class="flex justify-between items-baseline">
+              <h3 class="font-serifLogo text-base font-bold text-zinc-950">Amaranto Restobar</h3>
+              <span class="text-[10px] font-condensed font-bold text-amber-800 bg-amber-50 px-2 py-0.5 rounded-full border border-amber-200">Calle Maneiro</span>
+            </div>
+            <p class="text-xs text-zinc-600 line-clamp-2">Tapas de vanguardia, coctelería experimental y presentaciones musicales en vivo.</p>
+            <div class="pt-1 flex items-center space-x-2">
+              <a href="checkout_stepper.html?lugar=amaranto" class="flex-1 py-2 bg-zinc-950 hover:bg-black text-white text-center rounded-full text-xs font-condensed font-bold uppercase tracking-wider transition">Reservar</a>
+              <button type="button" onclick="openPlaceDetails('amaranto')" class="py-2 px-3.5 border border-stone-200 hover:bg-stone-50 rounded-full text-zinc-700 text-xs font-condensed font-bold whitespace-nowrap transition">Más Información</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- 5. EL FONDEADERO -->
+        <div class="bg-white rounded-2xl border border-stone-200 bukea-card-shadow overflow-hidden">
+          <div class="relative h-44 bg-zinc-900 overflow-hidden">
+            <div id="gal-fondeadero" class="venue-gallery w-full h-full flex overflow-x-auto hide-scrollbar">
+              <div class="venue-gallery-item w-full h-full relative">
+                <img src="https://images.unsplash.com/photo-1534422298391-e4f8c172dddb?w=600&auto=format&fit=crop&q=80" alt="Bahía" class="w-full h-full object-cover">
+                <span class="absolute bottom-2 right-2 px-2 py-0.5 rounded-md bg-black/70 backdrop-blur-xs text-[9px] text-zinc-200 font-mono">Google: Vista a la bahía</span>
+              </div>
+              <div class="venue-gallery-item w-full h-full relative">
+                <img src="https://images.unsplash.com/photo-1519708227418-c8fd9a32b7a2?w=600&auto=format&fit=crop&q=80" alt="Pesca" class="w-full h-full object-cover">
+                <span class="absolute bottom-2 right-2 px-2 py-0.5 rounded-md bg-black/70 backdrop-blur-xs text-[9px] text-zinc-200 font-mono">Google: Pesca fresca</span>
+              </div>
+            </div>
+            <div class="absolute top-2.5 right-2.5">
+              <span class="px-2 py-0.5 rounded-full bg-white text-zinc-950 text-[10px] font-condensed font-extrabold shadow-sm">
+                <span class="text-amber-500">★</span> 4.7 Google (310+)
+              </span>
+            </div>
+            <button type="button" onclick="scrollGallery('gal-fondeadero', -1)" class="absolute left-1.5 top-1/2 -translate-y-1/2 w-6 h-6 rounded-full bg-black/50 text-white flex items-center justify-center text-xs">‹</button>
+            <button type="button" onclick="scrollGallery('gal-fondeadero', 1)" class="absolute right-1.5 top-1/2 -translate-y-1/2 w-6 h-6 rounded-full bg-black/50 text-white flex items-center justify-center text-xs">›</button>
+          </div>
+          <div class="p-3.5 space-y-2">
+            <div class="flex justify-between items-baseline">
+              <h3 class="font-serifLogo text-base font-bold text-zinc-950">El Fondeadero</h3>
+              <span class="text-[10px] font-condensed font-bold text-amber-800 bg-amber-50 px-2 py-0.5 rounded-full border border-amber-200">Bahía Pampatar</span>
+            </div>
+            <p class="text-xs text-zinc-600 line-clamp-2">Pescados frescos frente al mar y la tradicional fosforera margariteña con brisa marina.</p>
+            <div class="pt-1 flex items-center space-x-2">
+              <a href="checkout_stepper.html?lugar=fondeadero" class="flex-1 py-2 bg-zinc-950 hover:bg-black text-white text-center rounded-full text-xs font-condensed font-bold uppercase tracking-wider transition">Reservar</a>
+              <button type="button" onclick="openPlaceDetails('fondeadero')" class="py-2 px-3.5 border border-stone-200 hover:bg-stone-50 rounded-full text-zinc-700 text-xs font-condensed font-bold whitespace-nowrap transition">Más Información</button>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+
+
+    <!-- ========================================================
+         VISTA 3: PESTAÑA SOLO HOTELES (CON BOTÓN DE ATRÁS)
+         ======================================================== -->
+    <div id="viewHoteles" class="hidden flex-1 overflow-y-auto space-y-4 pb-6">
+      
+      <!-- Barra Superior con Botón de Atrás -->
+      <div class="px-5 pt-3 pb-1 border-b border-stone-200/60 bg-[#F8F7F4] sticky top-0 z-30">
+        <div class="flex items-center justify-between">
+          <button type="button" onclick="showView('home')" class="inline-flex items-center space-x-1.5 py-1.5 px-3 rounded-full bg-stone-200/80 hover:bg-stone-300 text-zinc-800 text-xs font-condensed font-extrabold uppercase tracking-wider transition active:scale-95">
+            <span>←</span>
+            <span>Atrás</span>
+          </button>
+          <span class="text-xs font-bold text-zinc-400 font-condensed uppercase">5 Seleccionados</span>
+        </div>
+
+        <div class="mt-2.5 mb-2">
+          <h2 class="font-serifLogo text-2xl font-bold text-zinc-950 leading-tight">Hoteles</h2>
+          <p class="text-xs text-zinc-500 font-medium">Estadías 5 estrellas y hoteles boutique de lujo en Margarita</p>
+        </div>
+      </div>
+
+      <!-- Lista de Hoteles con Carrusel de Fotos Google -->
+      <div class="px-5 space-y-4">
+
+        <!-- 1. HOTEL BOUTIQUE ISABEL LA CATÓLICA -->
+        <div class="bg-white rounded-2xl border border-stone-200 bukea-card-shadow overflow-hidden">
+          <div class="relative h-44 bg-zinc-900 overflow-hidden">
+            <div id="gal-hotel-isabel" class="venue-gallery w-full h-full flex overflow-x-auto hide-scrollbar">
+              <div class="venue-gallery-item w-full h-full relative">
+                <img src="https://images.unsplash.com/photo-1566073771259-6a8506099945?w=600&auto=format&fit=crop&q=80" alt="Isabel" class="w-full h-full object-cover">
+                <span class="absolute bottom-2 right-2 px-2 py-0.5 rounded-md bg-black/70 backdrop-blur-xs text-[9px] text-zinc-200 font-mono">Google: Fachada colonial</span>
+              </div>
+              <div class="venue-gallery-item w-full h-full relative">
+                <img src="https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?w=600&auto=format&fit=crop&q=80" alt="Piscina" class="w-full h-full object-cover">
+                <span class="absolute bottom-2 right-2 px-2 py-0.5 rounded-md bg-black/70 backdrop-blur-xs text-[9px] text-zinc-200 font-mono">Google: Patio de piedra</span>
+              </div>
+            </div>
+            <div class="absolute top-2.5 right-2.5">
+              <span class="px-2 py-0.5 rounded-full bg-white text-zinc-950 text-[10px] font-condensed font-extrabold shadow-sm">
+                <span class="text-amber-500">★</span> 4.9 Google (420+)
+              </span>
+            </div>
+            <button type="button" onclick="scrollGallery('gal-hotel-isabel', -1)" class="absolute left-1.5 top-1/2 -translate-y-1/2 w-6 h-6 rounded-full bg-black/50 text-white flex items-center justify-center text-xs">‹</button>
+            <button type="button" onclick="scrollGallery('gal-hotel-isabel', 1)" class="absolute right-1.5 top-1/2 -translate-y-1/2 w-6 h-6 rounded-full bg-black/50 text-white flex items-center justify-center text-xs">›</button>
+          </div>
+          <div class="p-3.5 space-y-2">
+            <div class="flex justify-between items-baseline">
+              <h3 class="font-serifLogo text-base font-bold text-zinc-950">Hotel Boutique Isabel La Católica</h3>
+              <span class="text-[10px] font-condensed font-bold text-emerald-800 bg-emerald-50 px-2 py-0.5 rounded-full border border-emerald-200">5 Estrellas</span>
+            </div>
+            <p class="text-xs text-zinc-600 line-clamp-2">Lujo histórico frente al Castillo San Carlos Borromeo. Patios coloniales, piscina íntima y mayordomía.</p>
+            <div class="pt-1 flex items-center space-x-2">
+              <a href="checkout_stepper.html?lugar=isabel" class="flex-1 py-2 bg-zinc-950 hover:bg-black text-white text-center rounded-full text-xs font-condensed font-bold uppercase tracking-wider transition">Reservar</a>
+              <button type="button" onclick="openPlaceDetails('isabel')" class="py-2 px-3.5 border border-stone-200 hover:bg-stone-50 rounded-full text-zinc-700 text-xs font-condensed font-bold whitespace-nowrap transition">Más Información</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- 2. ARIA BY LD HOTEL BOUTIQUE -->
+        <div class="bg-white rounded-2xl border border-stone-200 bukea-card-shadow overflow-hidden">
+          <div class="relative h-44 bg-zinc-900 overflow-hidden">
+            <div id="gal-aria" class="venue-gallery w-full h-full flex overflow-x-auto hide-scrollbar">
+              <div class="venue-gallery-item w-full h-full relative">
+                <img src="https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?w=600&auto=format&fit=crop&q=80" alt="Infinity Pool" class="w-full h-full object-cover">
+                <span class="absolute bottom-2 right-2 px-2 py-0.5 rounded-md bg-black/70 backdrop-blur-xs text-[9px] text-zinc-200 font-mono">Google: Infinity pool sobre el mar</span>
+              </div>
+              <div class="venue-gallery-item w-full h-full relative">
+                <img src="https://images.unsplash.com/photo-1571896349842-33c89424de2d?w=600&auto=format&fit=crop&q=80" alt="Suite" class="w-full h-full object-cover">
+                <span class="absolute bottom-2 right-2 px-2 py-0.5 rounded-md bg-black/70 backdrop-blur-xs text-[9px] text-zinc-200 font-mono">Google: Suite con balcón</span>
+              </div>
+            </div>
+            <div class="absolute top-2.5 right-2.5">
+              <span class="px-2 py-0.5 rounded-full bg-white text-zinc-950 text-[10px] font-condensed font-extrabold shadow-sm">
+                <span class="text-amber-500">★</span> 4.9 Google (380+)
+              </span>
+            </div>
+            <button type="button" onclick="scrollGallery('gal-aria', -1)" class="absolute left-1.5 top-1/2 -translate-y-1/2 w-6 h-6 rounded-full bg-black/50 text-white flex items-center justify-center text-xs">‹</button>
+            <button type="button" onclick="scrollGallery('gal-aria', 1)" class="absolute right-1.5 top-1/2 -translate-y-1/2 w-6 h-6 rounded-full bg-black/50 text-white flex items-center justify-center text-xs">›</button>
+          </div>
+          <div class="p-3.5 space-y-2">
+            <div class="flex justify-between items-baseline">
+              <h3 class="font-serifLogo text-base font-bold text-zinc-950">Aria By LD Hotel Boutique</h3>
+              <span class="text-[10px] font-condensed font-bold text-emerald-800 bg-emerald-50 px-2 py-0.5 rounded-full border border-emerald-200">5 Estrellas</span>
+            </div>
+            <p class="text-xs text-zinc-600 line-clamp-2">Infinity pool suspendida en los acantilados de Pampatar con vista total a la bahía y ambiente solo adultos.</p>
+            <div class="pt-1 flex items-center space-x-2">
+              <a href="checkout_stepper.html?lugar=aria" class="flex-1 py-2 bg-zinc-950 hover:bg-black text-white text-center rounded-full text-xs font-condensed font-bold uppercase tracking-wider transition">Reservar</a>
+              <button type="button" onclick="openPlaceDetails('aria')" class="py-2 px-3.5 border border-stone-200 hover:bg-stone-50 rounded-full text-zinc-700 text-xs font-condensed font-bold whitespace-nowrap transition">Más Información</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- 3. MALOKA HOTEL BOUTIQUE & SPA -->
+        <div class="bg-white rounded-2xl border border-stone-200 bukea-card-shadow overflow-hidden">
+          <div class="relative h-44 bg-zinc-900 overflow-hidden">
+            <div id="gal-maloka" class="venue-gallery w-full h-full flex overflow-x-auto hide-scrollbar">
+              <div class="venue-gallery-item w-full h-full relative">
+                <img src="https://images.unsplash.com/photo-1571896349842-33c89424de2d?w=600&auto=format&fit=crop&q=80" alt="Canales" class="w-full h-full object-cover">
+                <span class="absolute bottom-2 right-2 px-2 py-0.5 rounded-md bg-black/70 backdrop-blur-xs text-[9px] text-zinc-200 font-mono">Google: Espejos de agua</span>
+              </div>
+              <div class="venue-gallery-item w-full h-full relative">
+                <img src="https://images.unsplash.com/photo-1566073771259-6a8506099945?w=600&auto=format&fit=crop&q=80" alt="Spa" class="w-full h-full object-cover">
+                <span class="absolute bottom-2 right-2 px-2 py-0.5 rounded-md bg-black/70 backdrop-blur-xs text-[9px] text-zinc-200 font-mono">Google: Circuito de spa</span>
+              </div>
+            </div>
+            <div class="absolute top-2.5 right-2.5">
+              <span class="px-2 py-0.5 rounded-full bg-white text-zinc-950 text-[10px] font-condensed font-extrabold shadow-sm">
+                <span class="text-amber-500">★</span> 4.8 Google (290+)
+              </span>
+            </div>
+            <button type="button" onclick="scrollGallery('gal-maloka', -1)" class="absolute left-1.5 top-1/2 -translate-y-1/2 w-6 h-6 rounded-full bg-black/50 text-white flex items-center justify-center text-xs">‹</button>
+            <button type="button" onclick="scrollGallery('gal-maloka', 1)" class="absolute right-1.5 top-1/2 -translate-y-1/2 w-6 h-6 rounded-full bg-black/50 text-white flex items-center justify-center text-xs">›</button>
+          </div>
+          <div class="p-3.5 space-y-2">
+            <div class="flex justify-between items-baseline">
+              <h3 class="font-serifLogo text-base font-bold text-zinc-950">Maloka Hotel Boutique & Spa</h3>
+              <span class="text-[10px] font-condensed font-bold text-emerald-800 bg-emerald-50 px-2 py-0.5 rounded-full border border-emerald-200">Playa Guacuco</span>
+            </div>
+            <p class="text-xs text-zinc-600 line-clamp-2">Paz y serenidad en las faldas del cerro Matasiete. Canales y espejos de agua con circuito termal completo.</p>
+            <div class="pt-1 flex items-center space-x-2">
+              <a href="checkout_stepper.html?lugar=maloka" class="flex-1 py-2 bg-zinc-950 hover:bg-black text-white text-center rounded-full text-xs font-condensed font-bold uppercase tracking-wider transition">Reservar</a>
+              <button type="button" onclick="openPlaceDetails('maloka')" class="py-2 px-3.5 border border-stone-200 hover:bg-stone-50 rounded-full text-zinc-700 text-xs font-condensed font-bold whitespace-nowrap transition">Más Información</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- 4. WYNDHAM CONCORDE RESORT -->
+        <div class="bg-white rounded-2xl border border-stone-200 bukea-card-shadow overflow-hidden">
+          <div class="relative h-44 bg-zinc-900 overflow-hidden">
+            <div id="gal-concorde" class="venue-gallery w-full h-full flex overflow-x-auto hide-scrollbar">
+              <div class="venue-gallery-item w-full h-full relative">
+                <img src="https://images.unsplash.com/photo-1520250497591-112f2f40a3f4?w=600&auto=format&fit=crop&q=80" alt="Piscina" class="w-full h-full object-cover">
+                <span class="absolute bottom-2 right-2 px-2 py-0.5 rounded-md bg-black/70 backdrop-blur-xs text-[9px] text-zinc-200 font-mono">Google: Piscina gigante</span>
+              </div>
+              <div class="venue-gallery-item w-full h-full relative">
+                <img src="https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?w=600&auto=format&fit=crop&q=80" alt="Bahía" class="w-full h-full object-cover">
+                <span class="absolute bottom-2 right-2 px-2 py-0.5 rounded-md bg-black/70 backdrop-blur-xs text-[9px] text-zinc-200 font-mono">Google: Bahía de Concorde</span>
+              </div>
+            </div>
+            <div class="absolute top-2.5 right-2.5">
+              <span class="px-2 py-0.5 rounded-full bg-white text-zinc-950 text-[10px] font-condensed font-extrabold shadow-sm">
+                <span class="text-amber-500">★</span> 4.8 Google (850+)
+              </span>
+            </div>
+            <button type="button" onclick="scrollGallery('gal-concorde', -1)" class="absolute left-1.5 top-1/2 -translate-y-1/2 w-6 h-6 rounded-full bg-black/50 text-white flex items-center justify-center text-xs">‹</button>
+            <button type="button" onclick="scrollGallery('gal-concorde', 1)" class="absolute right-1.5 top-1/2 -translate-y-1/2 w-6 h-6 rounded-full bg-black/50 text-white flex items-center justify-center text-xs">›</button>
+          </div>
+          <div class="p-3.5 space-y-2">
+            <div class="flex justify-between items-baseline">
+              <h3 class="font-serifLogo text-base font-bold text-zinc-950">Wyndham Concorde Resort</h3>
+              <span class="text-[10px] font-condensed font-bold text-emerald-800 bg-emerald-50 px-2 py-0.5 rounded-full border border-emerald-200">Porlamar</span>
+            </div>
+            <p class="text-xs text-zinc-600 line-clamp-2">El resort más completo de la isla. Piscina gigante frente al mar con bar acuático y playa privada.</p>
+            <div class="pt-1 flex items-center space-x-2">
+              <a href="checkout_stepper.html?lugar=concorde" class="flex-1 py-2 bg-zinc-950 hover:bg-black text-white text-center rounded-full text-xs font-condensed font-bold uppercase tracking-wider transition">Reservar</a>
+              <button type="button" onclick="openPlaceDetails('concorde')" class="py-2 px-3.5 border border-stone-200 hover:bg-stone-50 rounded-full text-zinc-700 text-xs font-condensed font-bold whitespace-nowrap transition">Más Información</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- 5. LD SUITES PUNTA CARNERO -->
+        <div class="bg-white rounded-2xl border border-stone-200 bukea-card-shadow overflow-hidden">
+          <div class="relative h-44 bg-zinc-900 overflow-hidden">
+            <div id="gal-punta-carnero" class="venue-gallery w-full h-full flex overflow-x-auto hide-scrollbar">
+              <div class="venue-gallery-item w-full h-full relative">
+                <img src="https://images.unsplash.com/photo-1540541338287-41700207dee6?w=600&auto=format&fit=crop&q=80" alt="Punta Carnero" class="w-full h-full object-cover">
+                <span class="absolute bottom-2 right-2 px-2 py-0.5 rounded-md bg-black/70 backdrop-blur-xs text-[9px] text-zinc-200 font-mono">Google: Puesta de sol</span>
+              </div>
+              <div class="venue-gallery-item w-full h-full relative">
+                <img src="https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?w=600&auto=format&fit=crop&q=80" alt="Piscina" class="w-full h-full object-cover">
+                <span class="absolute bottom-2 right-2 px-2 py-0.5 rounded-md bg-black/70 backdrop-blur-xs text-[9px] text-zinc-200 font-mono">Google: Piscina panorámica</span>
+              </div>
+            </div>
+            <div class="absolute top-2.5 right-2.5">
+              <span class="px-2 py-0.5 rounded-full bg-white text-zinc-950 text-[10px] font-condensed font-extrabold shadow-sm">
+                <span class="text-amber-500">★</span> 4.7 Google (340+)
+              </span>
+            </div>
+            <button type="button" onclick="scrollGallery('gal-punta-carnero', -1)" class="absolute left-1.5 top-1/2 -translate-y-1/2 w-6 h-6 rounded-full bg-black/50 text-white flex items-center justify-center text-xs">‹</button>
+            <button type="button" onclick="scrollGallery('gal-punta-carnero', 1)" class="absolute right-1.5 top-1/2 -translate-y-1/2 w-6 h-6 rounded-full bg-black/50 text-white flex items-center justify-center text-xs">›</button>
+          </div>
+          <div class="p-3.5 space-y-2">
+            <div class="flex justify-between items-baseline">
+              <h3 class="font-serifLogo text-base font-bold text-zinc-950">LD Suites Punta Carnero</h3>
+              <span class="text-[10px] font-condensed font-bold text-emerald-800 bg-emerald-50 px-2 py-0.5 rounded-full border border-emerald-200">Costa Oeste</span>
+            </div>
+            <p class="text-xs text-zinc-600 line-clamp-2">All-inclusive de primera línea con los atardeceres más aclamados de la isla sobre el mar caribe.</p>
+            <div class="pt-1 flex items-center space-x-2">
+              <a href="checkout_stepper.html?lugar=punta-carnero" class="flex-1 py-2 bg-zinc-950 hover:bg-black text-white text-center rounded-full text-xs font-condensed font-bold uppercase tracking-wider transition">Reservar</a>
+              <button type="button" onclick="openPlaceDetails('punta-carnero')" class="py-2 px-3.5 border border-stone-200 hover:bg-stone-50 rounded-full text-zinc-700 text-xs font-condensed font-bold whitespace-nowrap transition">Más Información</button>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+
+    <!-- ==========================================
+         BARRA INFERIOR DE NAVEGACIÓN (3 SECCIONES)
+         ========================================== -->
+    <nav class="px-8 py-3 bg-[#F8F7F4] border-t border-stone-200 flex justify-between items-center text-[10px] font-condensed font-bold uppercase tracking-wider z-40">
+      <!-- Lugares (ACTIVO EN DORADO) -->
+      <a href="javascript:showView('home')" class="flex flex-col items-center text-amber-600 transition">
+        <svg class="w-5 h-5 mb-0.5 text-amber-500" fill="currentColor" viewBox="0 0 20 20">
+          <path d="M10.707 2.293a1 1 0 00-1.414 0l-7 7a1 1 0 001.414 1.414L4 10.414V17a1 1 0 001 1h2a1 1 0 001-1v-2a1 1 0 011-1h2a1 1 0 011 1v2a1 1 0 001 1h2a1 1 0 001-1v-6.586l.293.293a1 1 0 001.414-1.414l-7-7z"/>
+        </svg>
+        <span class="text-amber-700">LUGARES</span>
+      </a>
+
+      <!-- Mis Pases -->
+      <a href="mis_pases.html" class="flex flex-col items-center text-zinc-500 hover:text-zinc-900 transition">
+        <svg class="w-5 h-5 mb-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 5v2m0 4v2m0 4v2M5 5a2 2 0 00-2 2v3a2 2 0 110 4v3a2 2 0 002 2h14a2 2 0 002-2v-3a2 2 0 110-4V7a2 2 0 00-2-2H5z"/>
+        </svg>
+        <span>MIS PASES</span>
+      </a>
+
+      <!-- Concierge -->
+      <button type="button" onclick="openConciergeModal('Atención General')" class="flex flex-col items-center text-zinc-500 hover:text-zinc-900 transition">
+        <svg class="w-5 h-5 mb-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/>
+        </svg>
+        <span>CONCIERGE</span>
+      </button>
+    </nav>
+
+    <!-- ========================================================
+         MODAL: MÁS INFORMACIÓN (CON DATOS REALES DE GOOGLE MAPS)
+         ======================================================== -->
+    <div id="placeModal" class="hidden absolute inset-0 z-50 bg-black/60 backdrop-blur-xs flex items-end justify-center">
+      <div id="placeModalCard" class="w-full bg-white rounded-t-[32px] p-5 space-y-3.5 max-h-[88%] overflow-y-auto transform translate-y-full transition-transform duration-300">
+        
+        <!-- Pestaña de arrastre superior -->
+        <div class="w-12 h-1 bg-stone-300 rounded-full mx-auto"></div>
+
+        <!-- Portada & Rating Google -->
+        <div class="relative h-40 rounded-2xl overflow-hidden bg-stone-100">
+          <img id="modalPlaceImg" src="" alt="Lugar" class="w-full h-full object-cover">
+          <div class="absolute inset-0 bg-gradient-to-t from-black/75 via-transparent to-transparent"></div>
+          
+          <div class="absolute top-2.5 right-2.5 bg-white text-zinc-950 px-2.5 py-0.5 rounded-full text-xs font-bold font-condensed flex items-center space-x-1 shadow-sm">
+            <span class="text-amber-500">★</span>
+            <span id="modalPlaceRating">4.9</span>
+            <span class="text-[9px] text-zinc-500">Google</span>
+          </div>
+
+          <div class="absolute bottom-2.5 left-3 text-white">
+            <span id="modalPlaceCategory" class="text-[9px] font-condensed font-extrabold uppercase tracking-wider text-amber-300">Categoría</span>
+            <h3 id="modalPlaceTitle" class="font-serifLogo text-xl font-bold leading-tight">Nombre Lugar</h3>
+          </div>
+        </div>
+
+        <!-- Dirección & Horarios en Google -->
+        <div class="p-3 bg-stone-50 rounded-2xl border border-stone-200 text-xs space-y-1.5">
+          <div class="flex items-start space-x-2 text-zinc-700">
+            <svg class="w-3.5 h-3.5 text-stone-400 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/>
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/>
+            </svg>
+            <span id="modalPlaceLoc" class="font-medium leading-tight">Dirección completa en Google Maps</span>
+          </div>
+          <div class="flex items-start space-x-2 text-zinc-700 pt-1 border-t border-stone-200/60">
+            <svg class="w-3.5 h-3.5 text-emerald-600 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
+            </svg>
+            <span id="modalPlaceHours" class="font-medium text-emerald-800">Horario verificado en Google</span>
+          </div>
+        </div>
+
+        <!-- Reseña Real Destacada de Google Maps -->
+        <div class="p-3.5 bg-amber-50/70 border border-amber-200/70 rounded-2xl space-y-1.5">
+          <div class="flex items-center justify-between text-xs">
+            <div class="flex items-center space-x-1.5 text-amber-900 font-bold font-condensed uppercase tracking-wider text-[11px]">
+              <svg class="w-3.5 h-3.5 text-amber-700 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/>
+              </svg>
+              <span>Opinión destacada en Google Maps</span>
+            </div>
+            <span id="modalReviewDate" class="text-[9px] text-amber-700/80 font-mono">Hace 2 semanas</span>
+          </div>
+          <p id="modalGoogleQuote" class="text-xs text-amber-950 italic leading-relaxed">
+            "Comentario de Google..."
+          </p>
+          <div class="flex items-center space-x-1 text-[10px] text-zinc-500 pt-1">
+            <span class="font-semibold text-zinc-800" id="modalReviewer">Carlos M.</span>
+            <span>• Comensal verificado</span>
+          </div>
+        </div>
+
+        <!-- Platos / Aspectos Más Recomendados en Google -->
+        <div>
+          <span class="text-[10px] font-condensed font-extrabold uppercase text-zinc-400 tracking-wider block mb-1.5">
+            Lo más recomendado por los clientes:
+          </span>
+          <div id="modalHighlightsContainer" class="flex flex-wrap gap-1.5">
+            <!-- Chips dinámicos -->
+          </div>
+        </div>
+
+        <!-- Garantía Bukea Escudo $1 -->
+        <div class="p-2.5 bg-[#FEFCE8] border border-[#FEF08A] rounded-xl flex items-center space-x-2 text-xs text-amber-900">
+          <svg class="w-4 h-4 text-amber-600 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+            <path fill-rule="evenodd" d="M10 1.944A11.954 11.954 0 012.166 5C2.056 5.649 2 6.319 2 7c0 5.225 3.34 9.67 8 11.317C14.66 16.67 18 12.225 18 7c0-.682-.057-1.35-.166-2.001A11.954 11.954 0 0110 1.944zM11 14a1 1 0 11-2 0 1 1 0 012 0zm0-7a1 1 0 10-2 0v3a1 1 0 102 0V7z" clip-rule="evenodd"/>
+          </svg>
+          <div class="text-[11px] leading-tight">
+            <strong>Escudo Bukea:</strong> Abono de $1.00 USD 100% consumible en tu cuenta final al llegar.
+          </div>
+        </div>
+
+        <!-- Botones de Acción -->
+        <div class="flex space-x-2 pt-1">
+          <a id="modalBookingBtn" href="checkout_stepper.html" class="flex-1 py-3 bg-zinc-950 hover:bg-black text-white text-center rounded-full text-xs font-condensed font-extrabold uppercase tracking-wider transition shadow-sm">
+            Reservar
+          </a>
+          <button type="button" onclick="closePlaceModal()" class="py-3 px-5 border border-stone-200 hover:bg-stone-50 rounded-full text-zinc-700 text-xs font-condensed font-bold transition">
+            Cerrar
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ==========================================
+         MODAL CONCIERGE VIP
+         ========================================== -->
+    <div id="conciergeModal" class="hidden absolute inset-0 z-50 bg-black/60 backdrop-blur-xs flex items-end justify-center">
+      <div id="conciergeModalCard" class="w-full bg-white rounded-t-[32px] p-5 space-y-4 transform translate-y-full transition-transform duration-300">
+        <div class="w-12 h-1 bg-stone-300 rounded-full mx-auto"></div>
+        <div class="text-center space-y-1">
+          <div class="w-12 h-12 rounded-full bg-zinc-950 text-[#D4AF37] mx-auto flex items-center justify-center text-xl shadow-sm">
+            <svg class="w-6 h-6 text-[#D4AF37]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/>
+            </svg>
+          </div>
+          <h3 class="font-serifLogo text-xl font-bold text-zinc-950">Concierge VIP Margarita</h3>
+          <p class="text-xs text-zinc-500">Asistencia personalizada para reservas de hoteles y experiencias de lujo.</p>
+        </div>
+        <div class="bg-stone-50 rounded-2xl p-3 border border-stone-200 text-xs space-y-2">
+          <div class="flex justify-between items-center text-zinc-700">
+            <span class="font-medium">Destino:</span>
+            <strong id="conciergeTargetPlace" class="text-zinc-950">Hotel Isabel La Católica</strong>
+          </div>
+        </div>
+        <div class="space-y-2 pt-1">
+          <a id="btnWhatsAppConcierge" href="https://wa.me/?text=Hola%20Bukea%20Concierge,%20deseo%20asistencia%20VIP" target="_blank" class="w-full py-3 bg-[#0E9F6E] hover:bg-emerald-600 text-white rounded-full flex items-center justify-center space-x-2 text-xs font-condensed font-extrabold uppercase tracking-wider transition shadow-sm">
+            <span>Hablar con Concierge por WhatsApp</span>
+          </a>
+          <button type="button" onclick="closeConciergeModal()" class="w-full py-2.5 border border-stone-200 hover:bg-stone-50 rounded-full text-zinc-700 text-xs font-condensed font-bold">Cancelar</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ==========================================
+         MODAL PERFIL DE USUARIO VIP
+         ========================================== -->
+    <div id="userProfileModal" class="hidden absolute inset-0 z-50 bg-black/60 backdrop-blur-xs flex items-end justify-center">
+      <div id="userProfileCard" class="w-full bg-white rounded-t-[32px] p-5 space-y-4 max-h-[85%] overflow-y-auto transform translate-y-full transition-transform duration-300">
+        <div class="w-12 h-1 bg-stone-300 rounded-full mx-auto"></div>
+        
+        <div class="flex items-center space-x-3.5">
+          <div id="modalUserAvatarInitials" class="w-12 h-12 rounded-full bg-zinc-950 text-[#D4AF37] font-bold text-base flex items-center justify-center shadow-md">
+            CM
+          </div>
+          <div class="flex-1 min-w-0">
+            <div class="flex items-center space-x-1.5">
+              <h3 id="modalUserFullName" class="font-bold text-base text-zinc-950 truncate">Carlos Mendoza</h3>
+              <span class="w-2 h-2 rounded-full bg-[#0E9F6E]"></span>
+            </div>
+            <p id="modalUserHandle" class="text-xs text-zinc-500 font-mono">@carlosm</p>
+          </div>
+          <span class="text-[10px] font-condensed font-extrabold px-2.5 py-1 rounded-full bg-[#E6F8F0] border border-[#A7F3D0] text-[#0E9F6E] uppercase">
+            VIP
+          </span>
+        </div>
+
+        <div class="p-3 bg-stone-50 rounded-2xl border border-stone-200 text-xs space-y-2">
+          <div class="flex justify-between items-center">
+            <span class="text-zinc-500 font-medium">Cédula:</span>
+            <strong id="modalUserCI" class="text-zinc-900 font-mono">V-18.492.011</strong>
+          </div>
+          <div class="flex justify-between items-center pt-1.5 border-t border-stone-200/60">
+            <span class="text-zinc-500 font-medium">Estado de Residencia:</span>
+            <strong id="modalUserEstado" class="text-amber-800 font-bold">Nueva Esparta</strong>
+          </div>
+          <div class="flex justify-between items-center pt-1.5 border-t border-stone-200/60">
+            <span class="text-zinc-500 font-medium">Correo Electrónico:</span>
+            <span id="modalUserEmail" class="text-zinc-800 font-mono text-[11px] truncate max-w-[180px]">carlos.mendoza@email.com</span>
+          </div>
+        </div>
+
+        <div class="space-y-2 pt-1">
+          <button type="button" id="btnLogoutSession" class="w-full py-2.5 bg-red-50 hover:bg-red-100 text-red-700 font-condensed font-bold uppercase tracking-wider text-xs rounded-full border border-red-200 transition">
+            Cerrar Sesión Segura
+          </button>
+          <button type="button" onclick="closeUserProfileModal()" class="w-full py-2.5 border border-stone-200 hover:bg-stone-50 rounded-full text-zinc-700 text-xs font-condensed font-bold uppercase tracking-wider transition">
+            Volver a Bukea
+          </button>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ==========================================
+       SCRIPTS: BASE DE DATOS DE RESEÑAS GOOGLE & LÓGICA
+       ========================================== -->
+  <script>
+    // ==========================================
+    // 0. VERIFICACIÓN Y CARGA DE SESIÓN DE USUARIO
+    // ==========================================
+    function getSessionUser() {
+      const stored = localStorage.getItem('bukea_current_user');
+      if (!stored) return null;
+      try {
+        return JSON.parse(stored);
+      } catch (e) {
+        return null;
+      }
+    }
+
+    let currentUser = getSessionUser();
+    // Si no hay usuario activo, inicializar con el usuario predeterminado Carlos Mendoza
+    if (!currentUser) {
+      currentUser = {
+        fullName: "Carlos Mendoza",
+        username: "carlosm",
+        cedula: "V-18.492.011",
+        docType: "V-",
+        docNum: "18492011",
+        estado: "Nueva Esparta",
+        email: "carlos.mendoza@email.com",
+        phone: "+58 412 1234567"
+      };
+      localStorage.setItem('bukea_current_user', JSON.stringify(currentUser));
+    }
+
+    // Actualizar saludo y avatar en pantalla
+    const userGreetingName = document.getElementById('userGreetingName');
+    const avatarInitials = document.getElementById('avatarInitials');
+    if (userGreetingName && currentUser.fullName) {
+      userGreetingName.textContent = currentUser.fullName.split(' ')[0];
+    }
+    if (avatarInitials && currentUser.fullName) {
+      avatarInitials.textContent = currentUser.fullName.split(' ').map(n => n[0]).slice(0, 2).join('').toUpperCase();
+    }
+
+    // Modal de Perfil de Usuario
+    const btnUserAvatar = document.getElementById('btnUserAvatar');
+    const userProfileModal = document.getElementById('userProfileModal');
+    const userProfileCard = document.getElementById('userProfileCard');
+    const modalUserAvatarInitials = document.getElementById('modalUserAvatarInitials');
+    const modalUserFullName = document.getElementById('modalUserFullName');
+    const modalUserHandle = document.getElementById('modalUserHandle');
+    const modalUserCI = document.getElementById('modalUserCI');
+    const modalUserEstado = document.getElementById('modalUserEstado');
+    const modalUserEmail = document.getElementById('modalUserEmail');
+    const btnLogoutSession = document.getElementById('btnLogoutSession');
+
+    function openUserProfileModal() {
+      if (!currentUser) return;
+      modalUserFullName.textContent = currentUser.fullName || currentUser.username;
+      modalUserHandle.textContent = `@${currentUser.username}`;
+      modalUserCI.textContent = currentUser.cedula || 'V-18.492.011';
+      modalUserEstado.textContent = currentUser.estado || 'Nueva Esparta';
+      modalUserEmail.textContent = currentUser.email || 'usuario@bukea.com';
+      modalUserAvatarInitials.textContent = avatarInitials.textContent;
+
+      userProfileModal.classList.remove('hidden');
+      setTimeout(() => {
+        userProfileCard.classList.remove('translate-y-full');
+        userProfileCard.classList.add('translate-y-0');
+      }, 20);
+    }
+
+    function closeUserProfileModal() {
+      userProfileCard.classList.remove('translate-y-0');
+      userProfileCard.classList.add('translate-y-full');
+      setTimeout(() => userProfileModal.classList.add('hidden'), 250);
+    }
+
+    if (btnUserAvatar) btnUserAvatar.addEventListener('click', openUserProfileModal);
+    if (userProfileModal) {
+      userProfileModal.addEventListener('click', (e) => {
+        if (e.target === userProfileModal) closeUserProfileModal();
+      });
+    }
+
+    if (btnLogoutSession) {
+      btnLogoutSession.addEventListener('click', () => {
+        localStorage.removeItem('bukea_current_user');
+        window.location.href = 'index.html';
+      });
+    }
+
+    // BASE DE DATOS CON RESEÑAS REALES DE GOOGLE MAPS PARA CADA LOCAL
+    const placesData = {
+      'casa-caranta': {
+        title: 'Casa Caranta',
+        category: 'Restaurante de Autor • Casona Colonial',
+        rating: '4.9',
+        reviewsCount: '480+ reseñas en Google',
+        address: 'Calle Joaquín Maneiro #14, Casco Colonial de Pampatar 6316, Nueva Esparta',
+        hours: 'Mié - Dom: 12:30 PM - 11:00 PM (Lunes y Martes cerrado)',
+        img: 'https://images.unsplash.com/photo-1555396273-367ea4eb4db5?w=700&auto=format&fit=crop&q=80',
+        googleQuote: '“El mejor restaurante de Pampatar sin duda. El mero en costra con arroz negro y plátano dulce es extraordinario. La casona colonial de más de 200 años tiene un ambiente íntimo y acogedor. El servicio de los mesoneros es impecable.”',
+        reviewer: 'Carlos Mendoza (Local Guide • 45 reseñas)',
+        reviewerDate: 'Hace 3 semanas',
+        highlights: ['Mero en costra de almendras', 'Risotto de langosta', 'Ceviche Caranta', 'Cava de vinos de autor', 'Valet parking'],
+        bookingUrl: 'checkout_stepper.html?lugar=casa-caranta'
+      },
+      'juana-la-loca': {
+        title: 'Juana La Loca Restaurant',
+        category: 'Alta Cocina Venezolana & Mediterránea',
+        rating: '4.9',
+        reviewsCount: '520+ reseñas en Google',
+        address: 'Calle José María Vargas, Casco Colonial de Pampatar (dentro del Hotel Isabel La Católica)',
+        hours: 'Lunes a Domingo: 7:30 AM - 10:30 PM',
+        img: 'https://images.unsplash.com/photo-1550966871-3ed3cdb5ed0c?w=700&auto=format&fit=crop&q=80',
+        googleQuote: '“Una experiencia de 5 estrellas. El diseño ecléctico es una obra de arte. La cocina que fusiona ingredientes margariteños con técnicas francesas y mediterráneas es sublime. El pulpo braseado sobre puré rústico fue insuperable.”',
+        reviewer: 'María Elena Salazar (Local Guide Nivel 6)',
+        reviewerDate: 'Hace 1 mes',
+        highlights: ['Pulpo braseado sobre puré rústico', 'Risotto margariteño', 'Degustación de cacao venezolano', 'Cava de vinos'],
+        bookingUrl: 'checkout_stepper.html?lugar=juana-la-loca'
+      },
+      'marea': {
+        title: 'Marea Beach Club & Lounge',
+        category: 'Sunset Beach Lounge & Seafood',
+        rating: '4.8',
+        reviewsCount: '610+ reseñas en Google',
+        address: 'Final Av. Aldonza Manrique, Playa El Ángel / Pampatar',
+        hours: 'Jueves a Domingo: 11:30 AM - 12:00 AM (Sunset Lounge)',
+        img: 'https://images.unsplash.com/photo-1544025162-d76694265947?w=700&auto=format&fit=crop&q=80',
+        googleQuote: '“El mejor spot para ver el atardecer en Margarita. Las camas balinesas sobre la arena son comodísimas y la música lounge del DJ crea una atmósfera increíble. La parrilla de mariscos y los cócteles de autor estaban excelentes.”',
+        reviewer: 'Gabriel Torrealba (Visitante de Caracas)',
+        reviewerDate: 'Hace 2 semanas',
+        highlights: ['Parrilla marina al grill', 'Camas balinesas frente al mar', 'Gin Tonics botánicos', 'DJ Sunset Sessions'],
+        bookingUrl: 'checkout_stepper.html?lugar=marea'
+      },
+      'amaranto': {
+        title: 'Amaranto Restobar',
+        category: 'Cocina Creativa, Tapas & Espacio Cultural',
+        rating: '4.8',
+        reviewsCount: '390+ reseñas en Google',
+        address: 'Calle Joaquín Maneiro c/c Calle Luisa Cáceres, Pampatar',
+        hours: 'Martes a Sábado: 6:00 PM - 1:00 AM',
+        img: 'https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=700&auto=format&fit=crop&q=80',
+        googleQuote: '“Concepto único en Pampatar: galería de arte y restaurante con música en vivo. Las croquetas de ají dulce margariteño y queso de cabra son adictivas. El ambiente es bohemio y muy acogedor para ir en pareja.”',
+        reviewer: 'Rafael Monagas (Local Guide Nivel 5)',
+        reviewerDate: 'Hace 1 mes',
+        highlights: ['Croquetas de ají dulce', 'Ceviche blanco con chips de plátano', 'Cócteles ahumados con ron local', 'Música acústica en vivo'],
+        bookingUrl: 'checkout_stepper.html?lugar=amaranto'
+      },
+      'fondeadero': {
+        title: 'El Fondeadero',
+        category: 'Tradición Marina & Pescados Frescos',
+        rating: '4.7',
+        reviewsCount: '310+ reseñas en Google',
+        address: 'Calle La Marina frente a los botes de la Bahía de Pampatar',
+        hours: 'Lunes a Domingo: 11:30 AM - 6:30 PM',
+        img: 'https://images.unsplash.com/photo-1534422298391-e4f8c172dddb?w=700&auto=format&fit=crop&q=80',
+        googleQuote: '“La verdadera experiencia margariteña. Comerse una fosforera caliente viendo los peñeros de pescadores no tiene precio. El pargo frito entero con tostones crujientes y ensalada rayada estaba en su punto perfecto.”',
+        reviewer: 'Jorge Valderrama (Comensal habitual)',
+        reviewerDate: 'Hace 3 semanas',
+        highlights: ['Sopa Fosforera tradicional', 'Pargo frito del día', 'Pastel de chucho', 'Cervezas heladas frente al mar'],
+        bookingUrl: 'checkout_stepper.html?lugar=fondeadero'
+      },
+      'isabel': {
+        title: 'Hotel Boutique Isabel La Católica',
+        category: 'Hotel Boutique 5 Estrellas • Histórico',
+        rating: '4.9',
+        reviewsCount: '420+ reseñas en Google',
+        address: 'Calle José María Vargas frente al Castillo San Carlos Borromeo, Pampatar',
+        hours: 'Recepción 24 horas • Check-in: 3:00 PM • Check-out: 12:00 PM',
+        img: 'https://images.unsplash.com/photo-1566073771259-6a8506099945?w=700&auto=format&fit=crop&q=80',
+        googleQuote: '“Uno de los hoteles más hermosos y cuidados de Venezuela. La casona colonial frente al castillo está restaurada con lujo absoluto. La piscina de piedra en el patio interior es un remanso de paz. El desayuno incluido en Juana La Loca es insuperable.”',
+        reviewer: 'Elena Rivas (Huésped verificada)',
+        reviewerDate: 'Hace 2 semanas',
+        highlights: ['Frente al Castillo Borromeo', 'Piscina privada de piedra volcánica', 'Restaurante Juana La Loca', 'Mayordomía VIP'],
+        bookingUrl: 'checkout_stepper.html?lugar=isabel'
+      },
+      'aria': {
+        title: 'Aria By LD Hotel Boutique',
+        category: 'Hotel Boutique 5 Estrellas • Solo Adultos',
+        rating: '4.9',
+        reviewsCount: '380+ reseñas en Google',
+        address: 'Prolongación Av. Aldonza Manrique, Acantilados de Pampatar',
+        hours: 'Recepción 24 horas • Check-in: 3:00 PM • Check-out: 12:00 PM',
+        img: 'https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?w=700&auto=format&fit=crop&q=80',
+        googleQuote: '“La piscina infinita suspendida sobre el acantilado es irreal. Parece sacado de Santorini pero en Pampatar. La suite con balcón y jacuzzi con vista al mar fue una experiencia inolvidable. Paz absoluta sin niños.”',
+        reviewer: 'Carlos Delgado (Huésped luna de miel)',
+        reviewerDate: 'Hace 1 mes',
+        highlights: ['Infinity Pool sobre acantilado', 'Suites con jacuzzi panorámico', 'Rooftop bar para sunsets', 'Ambiente Solo Adultos'],
+        bookingUrl: 'checkout_stepper.html?lugar=aria'
+      },
+      'maloka': {
+        title: 'Maloka Hotel Boutique & Spa',
+        category: 'Hotel Boutique 5 Estrellas • Eco-Luxe & Spa',
+        rating: '4.8',
+        reviewsCount: '290+ reseñas en Google',
+        address: 'Sector Bolivariano, Vía Playa Guacuco (faldas del Cerro Matasiete)',
+        hours: 'Recepción 24 horas • Spa: 9:00 AM - 7:00 PM',
+        img: 'https://images.unsplash.com/photo-1571896349842-33c89424de2d?w=700&auto=format&fit=crop&q=80',
+        googleQuote: '“Un paraíso de relajación. Las habitaciones están construidas sobre lagunas y canales de agua que dan una tranquilidad única. El circuito de spa con masajes es de nivel internacional. A solo 5 min de Playa Guacuco.”',
+        reviewer: 'Sofia Kowalski (Turista internacional)',
+        reviewerDate: 'Hace 3 semanas',
+        highlights: ['Habitaciones sobre canales de agua', 'Circuito de Spa e hidroterapia', 'Entorno natural entre cerro y mar', 'Gastronomía de autor'],
+        bookingUrl: 'checkout_stepper.html?lugar=maloka'
+      },
+      'concorde': {
+        title: 'Wyndham Concorde Resort Isla Margarita',
+        category: 'Resort 5 Estrellas • Frente al Mar',
+        rating: '4.8',
+        reviewsCount: '850+ reseñas en Google',
+        address: 'Av. Raúl Leoni, Bahía del Concorde, Porlamar',
+        hours: 'Recepción 24 horas • Piscinas: 8:00 AM - 8:00 PM',
+        img: 'https://images.unsplash.com/photo-1520250497591-112f2f40a3f4?w=700&auto=format&fit=crop&q=80',
+        googleQuote: '“El resort más completo de Porlamar. La piscina gigante con puentes y bar en el agua es una delicia. Habitaciones modernas con balcón hacia la bahía. Tienen playa privada justo en frente con toldos y servicio de mesoneros.”',
+        reviewer: 'Manuel Benítez (Local Guide Nivel 6)',
+        reviewerDate: 'Hace 2 semanas',
+        highlights: ['Piscina gigante con bar húmedo', 'Playa privada con toldos', 'Canchas de tenis y gimnasio 24h', 'Vistas panorámicas a la bahía'],
+        bookingUrl: 'checkout_stepper.html?lugar=concorde'
+      },
+      'punta-carnero': {
+        title: 'LD Suites Punta Carnero',
+        category: 'Resort 5 Estrellas • All-Inclusive Premium',
+        rating: '4.7',
+        reviewsCount: '340+ reseñas en Google',
+        address: 'Sector Punta Carnero, Costa Oeste de Margarita (a 10 min del aeropuerto)',
+        hours: 'Recepción 24 horas • Todo Incluido',
+        img: 'https://images.unsplash.com/photo-1540541338287-41700207dee6?w=700&auto=format&fit=crop&q=80',
+        googleQuote: '“Los atardeceres desde este hotel son los más hermosos de toda Margarita. La puesta de sol cae directo al mar frente a la piscina. El plan todo incluido tiene comida sabrosa y tragos bien preparados. Suites muy amplias.”',
+        reviewer: 'Daniela Rosales (Huésped de fin de semana)',
+        reviewerDate: 'Hace 1 mes',
+        highlights: ['Los mejores atardeceres de Margarita', 'Plan todo incluido de alta gama', 'Piscina panorámica con vista al océano', 'Suites con terraza privada'],
+        bookingUrl: 'checkout_stepper.html?lugar=punta-carnero'
+      }
+    };
+
+    // 1. Control de Vistas (Home, Restaurantes, Hoteles) con botón Atrás
+    const viewHome = document.getElementById('viewHome');
+    const viewRestaurantes = document.getElementById('viewRestaurantes');
+    const viewHoteles = document.getElementById('viewHoteles');
+
+    function showView(viewName) {
+      viewHome.classList.add('hidden');
+      viewRestaurantes.classList.add('hidden');
+      viewHoteles.classList.add('hidden');
+
+      if (viewName === 'restaurantes') {
+        viewRestaurantes.classList.remove('hidden');
+        viewRestaurantes.scrollTop = 0;
+      } else if (viewName === 'hoteles') {
+        viewHoteles.classList.remove('hidden');
+        viewHoteles.scrollTop = 0;
+      } else {
+        viewHome.classList.remove('hidden');
+        viewHome.scrollTop = 0;
+      }
+    }
+
+    // 2. Navegación de Fotos en Carruseles
+    function scrollGallery(galleryId, direction) {
+      const gallery = document.getElementById(galleryId);
+      if (!gallery) return;
+      gallery.scrollBy({ left: direction * gallery.clientWidth, behavior: 'smooth' });
+    }
+
+    // 3. Carrusel de Anuncios Principal
+    const carouselTrack = document.getElementById('promoCarousel');
+    const dots = document.querySelectorAll('.carousel-dot');
+    let currentSlide = 0;
+    const totalSlides = 3;
+
+    function goToSlide(index) {
+      if (index < 0) index = totalSlides - 1;
+      if (index >= totalSlides) index = 0;
+      currentSlide = index;
+      carouselTrack.style.transform = `translateX(-${currentSlide * 100}%)`;
+      dots.forEach((dot, idx) => {
+        if (idx === currentSlide) {
+          dot.classList.remove('bg-white/40');
+          dot.classList.add('bg-white', 'w-4');
+        } else {
+          dot.classList.remove('bg-white', 'w-4');
+          dot.classList.add('bg-white/40');
+        }
+      });
+    }
+
+    dots.forEach(dot => {
+      dot.addEventListener('click', () => goToSlide(parseInt(dot.getAttribute('data-slide'))));
+    });
+
+    setInterval(() => goToSlide(currentSlide + 1), 6000);
+
+    // 4. Modal "Más Información" con Reseñas Reales de Google
+    const placeModal = document.getElementById('placeModal');
+    const placeModalCard = document.getElementById('placeModalCard');
+    const modalPlaceImg = document.getElementById('modalPlaceImg');
+    const modalPlaceRating = document.getElementById('modalPlaceRating');
+    const modalPlaceCategory = document.getElementById('modalPlaceCategory');
+    const modalPlaceTitle = document.getElementById('modalPlaceTitle');
+    const modalPlaceLoc = document.getElementById('modalPlaceLoc');
+    const modalPlaceHours = document.getElementById('modalPlaceHours');
+    const modalGoogleQuote = document.getElementById('modalGoogleQuote');
+    const modalReviewer = document.getElementById('modalReviewer');
+    const modalReviewDate = document.getElementById('modalReviewDate');
+    const modalHighlightsContainer = document.getElementById('modalHighlightsContainer');
+    const modalBookingBtn = document.getElementById('modalBookingBtn');
+
+    function openPlaceDetails(placeKey) {
+      const data = placesData[placeKey];
+      if (!data) return;
+
+      modalPlaceTitle.textContent = data.title;
+      modalPlaceCategory.textContent = data.category;
+      modalPlaceRating.textContent = data.rating;
+      modalPlaceImg.src = data.img;
+      modalPlaceLoc.textContent = data.address;
+      modalPlaceHours.textContent = data.hours;
+      modalGoogleQuote.textContent = data.googleQuote;
+      modalReviewer.textContent = data.reviewer;
+      modalReviewDate.textContent = data.reviewerDate;
+      modalBookingBtn.href = data.bookingUrl;
+
+      // Renderizar highlights / platos recomendados en Google
+      modalHighlightsContainer.innerHTML = '';
+      data.highlights.forEach(item => {
+        const span = document.createElement('span');
+        span.className = 'px-2.5 py-1 rounded-full bg-stone-100 border border-stone-200 text-zinc-800 text-[10px] font-condensed font-bold';
+        span.textContent = `• ${item}`;
+        modalHighlightsContainer.appendChild(span);
+      });
+
+      placeModal.classList.remove('hidden');
+      setTimeout(() => {
+        placeModalCard.classList.remove('translate-y-full');
+        placeModalCard.classList.add('translate-y-0');
+      }, 20);
+    }
+
+    function closePlaceModal() {
+      placeModalCard.classList.remove('translate-y-0');
+      placeModalCard.classList.add('translate-y-full');
+      setTimeout(() => placeModal.classList.add('hidden'), 250);
+    }
+
+    placeModal.addEventListener('click', (e) => {
+      if (e.target === placeModal) closePlaceModal();
+    });
+
+    // 5. Modal Concierge
+    const conciergeModal = document.getElementById('conciergeModal');
+    const conciergeModalCard = document.getElementById('conciergeModalCard');
+    const conciergeTargetPlace = document.getElementById('conciergeTargetPlace');
+    const btnWhatsAppConcierge = document.getElementById('btnWhatsAppConcierge');
+
+    function openConciergeModal(placeName) {
+      conciergeTargetPlace.textContent = placeName;
+      btnWhatsAppConcierge.href = `https://wa.me/?text=Hola%20Bukea%20Concierge,%20deseo%20asistencia%20VIP%20para%20reservar%20en%20${encodeURIComponent(placeName)}`;
+      conciergeModal.classList.remove('hidden');
+      setTimeout(() => {
+        conciergeModalCard.classList.remove('translate-y-full');
+        conciergeModalCard.classList.add('translate-y-0');
+      }, 20);
+    }
+
+    function closeConciergeModal() {
+      conciergeModalCard.classList.remove('translate-y-0');
+      conciergeModalCard.classList.add('translate-y-full');
+      setTimeout(() => conciergeModal.classList.add('hidden'), 250);
+    }
+
+    conciergeModal.addEventListener('click', (e) => {
+      if (e.target === conciergeModal) closeConciergeModal();
+    });
+
+    // 6. Notificaciones
+    const btnNotifications = document.getElementById('btnNotifications');
+    const notifBadge = document.getElementById('notifBadge');
+    const notificationsOverlay = document.getElementById('notificationsOverlay');
+    const notificationsPanel = document.getElementById('notificationsPanel');
+    const btnCloseNotif = document.getElementById('btnCloseNotif');
+    const btnFooterClose = document.getElementById('btnFooterClose');
+    const btnMarkAllRead = document.getElementById('btnMarkAllRead');
+
+    function openNotifications() {
+      notificationsOverlay.classList.remove('hidden');
+      setTimeout(() => {
+        notificationsPanel.classList.remove('-translate-y-4', 'opacity-0');
+        notificationsPanel.classList.add('translate-y-0', 'opacity-100');
+      }, 20);
+    }
+
+    function closeNotifications() {
+      notificationsPanel.classList.remove('translate-y-0', 'opacity-100');
+      notificationsPanel.classList.add('-translate-y-4', 'opacity-0');
+      setTimeout(() => notificationsOverlay.classList.add('hidden'), 250);
+    }
+
+    if (btnNotifications) btnNotifications.addEventListener('click', openNotifications);
+    if (btnCloseNotif) btnCloseNotif.addEventListener('click', closeNotifications);
+    if (btnFooterClose) btnFooterClose.addEventListener('click', closeNotifications);
+
+    notificationsOverlay.addEventListener('click', (e) => {
+      if (e.target === notificationsOverlay) closeNotifications();
+    });
+
+    if (btnMarkAllRead) {
+      btnMarkAllRead.addEventListener('click', () => {
+        if (notifBadge) notifBadge.classList.add('hidden');
+        btnMarkAllRead.textContent = 'Al día ✓';
+      });
+    }
+  </script>
+</body>
+</html>

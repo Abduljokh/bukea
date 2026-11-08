@@ -1,0 +1,389 @@
+/* Reset basico */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: "Segoe UI", Arial, sans-serif;
+  background-color: #f0f2f5;
+  color: #333333;
+  line-height: 1.4;
+}
+
+/* ===================================================
+   PANTALLA DE LOGIN
+   =================================================== */
+.login-contenedor {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  padding: 15px;
+}
+
+.caja-login {
+  background-color: #ffffff;
+  border: 1px solid #d8dde6;
+  border-radius: 6px;
+  width: 100%;
+  max-width: 400px;
+  padding: 30px 25px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+}
+
+.login-encabezado {
+  text-align: center;
+  margin-bottom: 22px;
+}
+
+.login-encabezado h2 {
+  font-size: 22px;
+  color: #1e293b;
+  margin-bottom: 5px;
+}
+
+.login-encabezado p {
+  font-size: 13px;
+  color: #64748b;
+}
+
+/* Formulario */
+.campo {
+  margin-bottom: 16px;
+}
+
+.campo label {
+  display: block;
+  font-size: 13px;
+  font-weight: 600;
+  margin-bottom: 5px;
+  color: #334155;
+}
+
+.campo input, 
+.campo select {
+  width: 100%;
+  padding: 9px 11px;
+  border: 1px solid #cbd5e1;
+  border-radius: 4px;
+  font-size: 14px;
+  background-color: #f8fafc;
+}
+
+.campo input:focus, 
+.campo select:focus {
+  outline: none;
+  border-color: #2563eb;
+  background-color: #ffffff;
+}
+
+.btn-ingresar {
+  width: 100%;
+  padding: 10px;
+  background-color: #1d4ed8;
+  color: #ffffff;
+  border: none;
+  border-radius: 4px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  margin-top: 5px;
+}
+
+.btn-ingresar:hover {
+  background-color: #1e40af;
+}
+
+/* Boton secundario y enlaces para registrarse */
+.btn-secundario-link {
+  display: block;
+  width: 100%;
+  text-align: center;
+  padding: 9px;
+  background-color: #f8fafc;
+  color: #2563eb;
+  border: 1px solid #cbd5e1;
+  border-radius: 4px;
+  font-size: 13px;
+  font-weight: 600;
+  text-decoration: none;
+  margin-top: 10px;
+  cursor: pointer;
+}
+
+.btn-secundario-link:hover {
+  background-color: #f1f5f9;
+  border-color: #94a3b8;
+}
+
+.separador-o {
+  text-align: center;
+  font-size: 12px;
+  color: #94a3b8;
+  margin: 12px 0 4px 0;
+}
+
+/* Mensajes de error y exito */
+.mensaje-error {
+  display: none;
+  background-color: #fee2e2;
+  color: #991b1b;
+  border: 1px solid #fca5a5;
+  padding: 9px 12px;
+  border-radius: 4px;
+  font-size: 13px;
+  margin-bottom: 15px;
+}
+
+.mensaje-exito {
+  display: none;
+  background-color: #d1fae5;
+  color: #065f46;
+  border: 1px solid #a7f3d0;
+  padding: 9px 12px;
+  border-radius: 4px;
+  font-size: 13px;
+  margin-bottom: 15px;
+}
+
+/* Tabla de ayuda con credenciales de prueba */
+.panel-cuentas-prueba {
+  margin-top: 22px;
+  padding-top: 15px;
+  border-top: 1px dashed #cbd5e1;
+}
+
+.panel-cuentas-prueba h4 {
+  font-size: 12px;
+  text-transform: uppercase;
+  color: #475569;
+  margin-bottom: 8px;
+}
+
+.tabla-ayuda {
+  width: 100%;
+  font-size: 12px;
+  border-collapse: collapse;
+}
+
+.tabla-ayuda th, 
+.tabla-ayuda td {
+  padding: 5px 6px;
+  border: 1px solid #e2e8f0;
+  text-align: left;
+}
+
+.tabla-ayuda th {
+  background-color: #f1f5f9;
+  font-weight: 600;
+}
+
+.btn-autocompletar {
+  background-color: #f1f5f9;
+  border: 1px solid #cbd5e1;
+  padding: 2px 6px;
+  border-radius: 3px;
+  cursor: pointer;
+  font-size: 11px;
+}
+
+.btn-autocompletar:hover {
+  background-color: #e2e8f0;
+}
+
+/* ===================================================
+   PANTALLA PRINCIPAL (inicio.html)
+   =================================================== */
+.barra-navegacion {
+  background-color: #1e293b;
+  color: #ffffff;
+  padding: 12px 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.barra-titulo h1 {
+  font-size: 17px;
+  font-weight: 600;
+}
+
+.barra-usuario {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  font-size: 13px;
+}
+
+.badge-rol {
+  padding: 3px 8px;
+  border-radius: 3px;
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+.rol-admin {
+  background-color: #dc2626;
+  color: #ffffff;
+}
+
+.rol-operador {
+  background-color: #d97706;
+  color: #ffffff;
+}
+
+.rol-consulta {
+  background-color: #475569;
+  color: #ffffff;
+}
+
+.btn-cerrar {
+  background-color: transparent;
+  color: #e2e8f0;
+  border: 1px solid #475569;
+  padding: 5px 10px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 12px;
+}
+
+.btn-cerrar:hover {
+  background-color: #334155;
+}
+
+/* Contenido Principal */
+.contenedor {
+  max-width: 1050px;
+  margin: 20px auto;
+  padding: 0 15px;
+}
+
+.tarjeta {
+  background-color: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 6px;
+  padding: 20px;
+  margin-bottom: 20px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+}
+
+.tarjeta-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid #e2e8f0;
+  padding-bottom: 12px;
+  margin-bottom: 15px;
+}
+
+.tarjeta-header h3 {
+  font-size: 16px;
+  color: #0f172a;
+}
+
+/* Fila de informacion y bienvenida */
+.info-bienvenida {
+  background-color: #f8fafc;
+  border-left: 4px solid #2563eb;
+  padding: 12px 16px;
+  border-radius: 0 4px 4px 0;
+  margin-bottom: 20px;
+  font-size: 14px;
+}
+
+.info-bienvenida span {
+  font-weight: 600;
+}
+
+/* Tablas del sistema */
+.tabla-general {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+  margin-top: 10px;
+}
+
+.tabla-general th, 
+.tabla-general td {
+  padding: 10px 12px;
+  border-bottom: 1px solid #e2e8f0;
+  text-align: left;
+}
+
+.tabla-general th {
+  background-color: #f8fafc;
+  color: #475569;
+  font-weight: 600;
+  font-size: 12px;
+}
+
+.tabla-general tr:hover {
+  background-color: #f1f5f9;
+}
+
+/* Boton para eliminar registros */
+.btn-eliminar {
+  background-color: #ef4444;
+  color: #ffffff;
+  border: none;
+  padding: 4px 8px;
+  border-radius: 3px;
+  cursor: pointer;
+  font-size: 11px;
+}
+
+.btn-eliminar:hover {
+  background-color: #dc2626;
+}
+
+/* Formulario inline para agregar */
+.formulario-inline {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-top: 10px;
+}
+
+.formulario-inline input,
+.formulario-inline select {
+  padding: 8px 10px;
+  border: 1px solid #cbd5e1;
+  border-radius: 4px;
+  font-size: 13px;
+  flex: 1;
+  min-width: 140px;
+}
+
+.btn-agregar {
+  background-color: #059669;
+  color: #ffffff;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 4px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.btn-agregar:hover {
+  background-color: #047857;
+}
+
+/* Leyenda de permisos */
+.caja-permisos {
+  background-color: #fffbeb;
+  border: 1px solid #fef3c7;
+  padding: 10px 14px;
+  border-radius: 4px;
+  font-size: 12px;
+  color: #92400e;
+  margin-top: 15px;
+}
+
+/* Ocultar elementos segun rol */
+.oculto {
+  display: none !important;
+}

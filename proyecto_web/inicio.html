@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Panel Principal - Sistema de Control</title>
+  <link rel="stylesheet" href="css/estilos.css">
+</head>
+<body>
+
+  <!-- Barra Superior -->
+  <header class="barra-navegacion">
+    <div class="barra-titulo">
+      <h1>Panel de Gestión</h1>
+    </div>
+
+    <div class="barra-usuario">
+      <div>
+        <span>Usuario: </span>
+        <strong id="nombre-usuario">...</strong>
+      </div>
+      <span id="rol-usuario" class="badge-rol">...</span>
+      <button id="btn-cerrar-sesion" class="btn-cerrar">Cerrar Sesión</button>
+    </div>
+  </header>
+
+  <!-- Contenedor Principal -->
+  <main class="contenedor">
+
+    <!-- Mensaje de Bienvenida -->
+    <div class="info-bienvenida">
+      Bienvenido, <span id="bienvenida-nombre">...</span>. Tu rol actual en el sistema es <span id="bienvenida-rol">...</span>.
+    </div>
+
+    <!-- Modulo 1: Tabla Principal de Registros -->
+    <div class="tarjeta">
+      <div class="tarjeta-header">
+        <h3>Registros del Sistema</h3>
+      </div>
+
+      <p style="font-size: 13px; color: #64748b; margin-bottom: 12px;">
+        Listado general de actividades y reportes registrados en el sistema.
+      </p>
+
+      <table class="tabla-general">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Descripción / Título</th>
+            <th>Área</th>
+            <th>Fecha</th>
+            <th>Estado</th>
+            <th>Acción</th>
+          </tr>
+        </thead>
+        <tbody id="tbody-registros">
+          <!-- Cargado mediante JavaScript -->
+        </tbody>
+      </table>
+
+      <!-- Formulario para agregar registro (visible solo para Administrador y Operador) -->
+      <div id="seccion-formulario" style="margin-top: 25px; padding-top: 15px; border-top: 1px solid #e2e8f0;">
+        <h4 style="font-size: 14px; margin-bottom: 8px; color: #334155;">Agregar Nuevo Registro</h4>
+        <form id="form-nuevo-registro" class="formulario-inline">
+          <input type="text" id="txt-titulo" placeholder="Descripción del registro" required>
+          <input type="text" id="txt-area" placeholder="Área o Departamento" required>
+          <select id="cmb-estado">
+            <option value="Pendiente">Pendiente</option>
+            <option value="En Proceso">En Proceso</option>
+            <option value="Completado">Completado</option>
+          </select>
+          <button type="submit" class="btn-agregar">Guardar Registro</button>
+        </form>
+      </div>
+    </div>
+
+    <!-- Modulo 2: Usuarios y Roles (Exclusivo para Administrador) -->
+    <div id="seccion-admin" class="tarjeta oculto">
+      <div class="tarjeta-header">
+        <div>
+          <h3>Control de Usuarios del Sistema (Solo Administrador)</h3>
+          <span style="font-size: 12px; color: #64748b;">Gestión de accesos y credenciales</span>
+        </div>
+        <div style="display: flex; gap: 8px; align-items: center;">
+          <a href="registro.html" class="btn-agregar" style="text-decoration: none; font-size: 12px; padding: 6px 12px;">+ Registrar Nuevo Usuario</a>
+          <span class="badge-rol rol-admin">Nivel Admin</span>
+        </div>
+      </div>
+
+      <p style="font-size: 13px; color: #64748b; margin-bottom: 10px;">
+        Esta sección únicamente se muestra si el usuario autenticado tiene el rol de Administrador.
+      </p>
+
+      <table class="tabla-general">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Usuario</th>
+            <th>Nombre Completo</th>
+            <th>Rol</th>
+            <th>Alcance de Permisos</th>
+          </tr>
+        </thead>
+        <tbody id="tbody-usuarios">
+          <!-- Cargado mediante JavaScript -->
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Modulo 3: Explicación de permisos del rol activo -->
+    <div class="tarjeta">
+      <div class="tarjeta-header">
+        <h3>Permisos de tu Rol</h3>
+      </div>
+      <p id="descripcion-permisos" class="caja-permisos">
+        Cargando información de permisos...
+      </p>
+    </div>
+
+  </main>
+
+  <script src="js/inicio.js"></script>
+</body>
+</html>
