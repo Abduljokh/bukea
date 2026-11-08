@@ -211,7 +211,10 @@ export class CanonicalService {
         .insert({
           name: guestName,
           phone_whatsapp: cleanPhone,
-          karma_points: 0
+          karma_points: 0,
+          tier: 'explorer',
+          total_spent_usd: 0.00,
+          is_vip_member: false
         })
         .select('id')
         .single();
@@ -272,7 +275,7 @@ export class CanonicalService {
     // A. Buscar reserva
     const { data: booking, error: bookError } = await supabase
       .from('bookings')
-      .select('*, guests(id, name, karma_points)')
+      .select('*, guests(id, name, karma_points, total_spent_usd, tier, is_vip_member)')
       .eq('booking_code', bookingCode)
       .single();
 
@@ -303,7 +306,9 @@ export class CanonicalService {
     const { data: payment, error: payError } = await supabase
       .from('payments')
       .insert({
+        guest_id: booking.guest_id,
         booking_id: booking.id,
+        payment_type: 'deposit',
         amount_usd: booking.deposit_amount,
         method: method || 'pago_movil',
         reference: reference || `REF-${Date.now()}`,
@@ -324,12 +329,19 @@ export class CanonicalService {
       })
       .eq('id', booking.id);
 
-    // D. Bonificar con +10 Karma Points al comensal
+    // D. Bonificar con +10 Karma Points y sumar al gasto acumulado
     if (booking.guest_id) {
+      const currentSpent = Number(booking.guests?.total_spent_usd || 0) + Number(booking.deposit_amount || 1.00);
+      let calculatedTier = 'explorer';
+      if (currentSpent >= 200) calculatedTier = 'vip';
+      else if (currentSpent >= 80) calculatedTier = 'foodie';
+
       await supabase
         .from('guests')
         .update({
           karma_points: (booking.guests?.karma_points || 0) + 10,
+          total_spent_usd: currentSpent,
+          tier: calculatedTier,
           updated_at: new Date().toISOString()
         })
         .eq('id', booking.guest_id);
